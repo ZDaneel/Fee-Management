@@ -17,7 +17,7 @@ public enum ExceptionCodeEnum {
     /**
      * 通用结果
      */
-    ERROR(-1, "网络错误"),
+    ERROR(-1, "错误"),
     SUCCESS(200, "成功"),
 
     /**

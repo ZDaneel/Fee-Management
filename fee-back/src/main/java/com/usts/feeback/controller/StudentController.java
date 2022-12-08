@@ -32,22 +32,13 @@ public class StudentController {
                         .<Student>lambdaQuery()
                         .eq(Student::getId, id));
         HttpSession session = request.getSession();
-        Integer studentId = (Integer) session.getAttribute("student_id");
         String id1 = session.getId();
-        log.info("使用session后获取的学生id: " + studentId);
         log.info("使用session后获取的sessionId: " + id1);
         return Result.success(student);
     }
 
     @PostMapping("/login")
     public Result<Boolean> login(@RequestBody Student student, HttpServletRequest request) {
-        System.out.println(student.toString());
-        // 业务处理
-
-        // 设置cookie
-        HttpSession session = request.getSession();
-        session.setAttribute("student_id", 1);
-        log.info("请求后返回的sessionId: " + session.getId());
-        return Result.success();
+        return studentService.login(student, request);
     }
 }

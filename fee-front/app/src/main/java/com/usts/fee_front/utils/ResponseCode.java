@@ -4,7 +4,9 @@ package com.usts.fee_front.utils;
  * @author zdaneel
  */
 public class ResponseCode {
-    public static final int SUCCESS = 2000;
+    public static final int SUCCESS = 200;
+    public static final int FAILED = -1;
+    public static final int NEED_LOGIN = 900;
 
     public static final int EMPTY_RESPONSE = 4000;
     public static final int SERVER_ERROR = 4001;

@@ -1,12 +1,17 @@
 package com.usts.fee_front.utils;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.usts.fee_front.MyApplication;
 
 import java.io.IOException;
 import java.util.List;
@@ -25,9 +30,8 @@ public class OkHttpCallback implements Callback {
     private final String TAG = "OkHttpCallback";
 
     private final ObjectMapper mapper = new ObjectMapper();
-    private final Message message = new Message();
+    private final Handler handler = new Handler(Looper.getMainLooper());
     public String url;
-    public String result;
 
     /**
      * 接口调用成功
@@ -42,28 +46,28 @@ public class OkHttpCallback implements Callback {
             ResponseBody body = response.body();
             if (body != null) {
                 //成功时获取接口数据
-                result = body.string();
-                Log.d(TAG,"请求成功:"+ result.toString());
-                //mapper.readValue()
-                //调用onFinish输出获取的信息，可用通过重写onFinish()方法，运用hashmap获取需要的值并存储
-                onFinish(ResponseCode.SUCCESS, result);
+                String result = body.string();
+                @SuppressWarnings("all")
+                Result res = mapper.readValue(result, Result.class);
+                Integer code = res.getCode();
+                String message = res.getMessage();
+                Log.d(TAG,"请求成功:"+ result);
+                if (ResponseCode.SUCCESS == code) {
+                    onFinish(result);
+                } else {
+                    handler.post(() -> Toast.makeText(MyApplication.context, message, Toast.LENGTH_SHORT).show());
+                }
             }
         }
     }
 
     @Override
     public void onFailure(@NonNull Call call, IOException e) {
-        Log.d(TAG,"url:"+url);
         Log.d(TAG,"请求失败:"+e.toString());
-        //请求失败，输出失败的原因
-        try {
-            onFinish(ResponseCode.REQUEST_FAILED,e.toString());
-        } catch (JsonProcessingException ex) {
-            ex.printStackTrace();
-        }
+        Log.d(TAG,"url:" + url);
     }
 
-    public void onFinish(int status,String msg) throws JsonProcessingException {}
+    public void onFinish(String msg) throws JsonProcessingException {}
 
 }
 

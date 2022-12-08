@@ -10,6 +10,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -21,7 +22,6 @@ import com.usts.fee_front.utils.OkHttpCallback;
 import com.usts.fee_front.utils.OkHttpUtils;
 import com.usts.fee_front.utils.ResponseCode;
 import com.usts.fee_front.utils.Result;
-import com.usts.fee_front.utils.Utils;
 
 import java.io.IOException;
 import java.util.List;
@@ -29,6 +29,7 @@ import java.util.List;
 import okhttp3.Call;
 import okhttp3.Headers;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 /**
  * @author zdaneel
@@ -38,7 +39,6 @@ public class MainActivity extends AppCompatActivity {
     public static final String TAG = "MainActivity";
     private ActivityMainBinding binding;
     private final ObjectMapper mapper = new ObjectMapper();
-    private final Message message = new Message();
     private final Handler handler = new Handler(Looper.getMainLooper());
 
     @Override
@@ -69,34 +69,51 @@ public class MainActivity extends AppCompatActivity {
         String studentJson = mapper.writeValueAsString(student);
         Log.e(TAG, studentJson);
         OkHttpUtils.login(NetworkConstants.LOGIN_URL, studentJson, new OkHttpCallback() {
+
             @Override
             public void onResponse(@NonNull Call call, Response response) throws IOException {
-                super.onResponse(call, response);
-                // 处理session
-                Headers headers =response.headers();
-                List<String> cookies = headers.values("Set-Cookie");
-                String session = cookies.get(0);
-                String sessionId = session.substring(0,session.indexOf(";"));
-                Log.e(TAG, "从后端获得的: " + sessionId);
-                // 存入文件
-                SharedPreferences share = getSharedPreferences("Session", MODE_PRIVATE);
-                SharedPreferences.Editor edit = share.edit();
-                edit.putString("sessionId",sessionId);
-                edit.apply();
+                if (!response.isSuccessful()) {
+                    Log.d(TAG, "请求失败");
+                    Toast.makeText(getApplicationContext(), "请求失败", Toast.LENGTH_SHORT).show();
+                }
+                ResponseBody body = response.body();
+                if (body != null) {
+                    String string = body.string();
+                    System.out.println(string);
+                    // 判断登陆情况
+                    @SuppressWarnings("all")
+                    Result res = mapper.readValue(string, Result.class);
+                    Integer code = res.getCode();
+                    String message = res.getMessage();
+                    if (ResponseCode.SUCCESS == code) {
+                        // 处理session
+                        Headers headers = response.headers();
+                        List<String> cookies = headers.values("Set-Cookie");
+                        String session = cookies.get(0);
+                        String sessionId = session.substring(0, session.indexOf(";"));
+                        Log.e(TAG, "从后端获得的: " + sessionId);
+                        // 存入文件
+                        SharedPreferences share = getSharedPreferences("Session", MODE_PRIVATE);
+                        SharedPreferences.Editor edit = share.edit();
+                        edit.putString("sessionId", sessionId);
+                        edit.apply();
+                        onFinish(message);
+                    } else {
+                        handler.post(() -> Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show());
+                    }
+                }
             }
 
             @Override
-            public void onFinish(int status, String msg) throws JsonProcessingException {
-                super.onFinish(status, msg);
-                if (status == ResponseCode.SUCCESS) {
-                    handler.post(() -> {
-                        // 清空数据
-                        binding.studentNo.setText("");
-                        binding.password.setText("");
-                        // 处理页面的跳转
-                        test(view);
-                    });
-                }
+            public void onFinish(String msg) {
+
+                handler.post(() -> {
+                    // 清空数据
+                    binding.studentNo.setText("");
+                    binding.password.setText("");
+                    // 处理页面的跳转
+
+                });
             }
         });
     }
@@ -105,17 +122,11 @@ public class MainActivity extends AppCompatActivity {
         OkHttpUtils.get(NetworkConstants.BASE_URL + "/student/query/1",
                 new OkHttpCallback() {
                     @Override
-                    public void onFinish(int status, String msg) throws JsonProcessingException {
-                        if (status == ResponseCode.SUCCESS) {
-                            Result<Student> result = mapper.readValue(msg, new TypeReference<Result<Student>>() {});
-                            Student student = result.getData();
-                            handler.post(()->{
-                                binding.studentNo.setText(student.toString());
-                            });
-                        } else {
-                            message.what = ResponseCode.REQUEST_FAILED;
-                            handler.post(()-> Utils.showMessage(getApplicationContext(), message));
-                        }
+                    public void onFinish(String msg) throws JsonProcessingException {
+                        Result<Student> res = mapper.readValue(msg, new TypeReference<Result<Student>>() {
+                        });
+                        Student student = res.getData();
+                        handler.post(() -> binding.studentNo.setText(student.toString()));
                     }
                 });
     }
