@@ -62,7 +62,7 @@ public class StudentController {
     }
 
     @ApiOperation(value = "登出操作")
-    @GetMapping("logout")
+    @GetMapping("/logout")
     public Result<Boolean> logout(HttpServletRequest request) {
         request.getSession().removeAttribute(SESSION_STUDENT_DTO);
         return Result.success();
