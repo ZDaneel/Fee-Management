@@ -8,10 +8,67 @@
         android:id="@+id/navigation_home"
         android:name="com.usts.fee_front.fragment.HomeFragment"
         android:label="HomeFragment"
-        tools:layout="@layout/fragment_home"/>
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_navigation_home_to_feeListFragment"
+            app:destination="@id/feeListFragment" />
+    </fragment>
     <fragment
         android:id="@+id/navigation_setting"
         android:name="com.usts.fee_front.fragment.SettingFragment"
         android:label="SettingFragment"
-        tools:layout="@layout/fragment_setting"/>
+        tools:layout="@layout/fragment_setting" />
+    <fragment
+        android:id="@+id/feeListFragment"
+        android:name="com.usts.fee_front.fragment.FeeListFragment"
+        android:label="FeeListFragment"
+        tools:layout="@layout/fragment_fee_list">
+        <action
+            android:id="@+id/action_feeListFragment_to_feeAddFragment"
+            app:destination="@id/feeAddFragment" />
+        <action
+            android:id="@+id/action_feeListFragment_to_feeDetailFragment"
+            app:destination="@id/feeDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/feeAddFragment"
+        android:name="com.usts.fee_front.fragment.FeeAddFragment"
+        android:label="FeeAddFragment"
+        tools:layout="@layout/fragment_fee_add" />
+
+    <fragment
+        android:id="@+id/feeDetailFragment"
+        android:name="com.usts.fee_front.fragment.FeeDetailFragment"
+        android:label="FeeDetailFragment"
+        tools:layout="@layout/fragment_fee_detail">
+        <action
+            android:id="@+id/action_feeDetailFragment_to_questionListFragment"
+            app:destination="@id/questionListFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/questionDetailFragment"
+        android:name="com.usts.fee_front.fragment.QuestionDetailFragment"
+        android:label="QuestionDetailFragment"
+        tools:layout="@layout/fragment_question_detail"/>
+
+    <fragment
+        android:id="@+id/questionAddFragment"
+        android:name="com.usts.fee_front.fragment.QuestionAddFragment"
+        android:label="QuestionAddFragment"
+        tools:layout="@layout/fragment_question_add"/>
+
+    <fragment
+        android:id="@+id/questionListFragment"
+        android:name="com.usts.fee_front.fragment.QuestionListFragment"
+        android:label="QuestionListFragment"
+        tools:layout="@layout/fragment_question_list">
+        <action
+            android:id="@+id/action_questionListFragment_to_questionDetailFragment"
+            app:destination="@id/questionDetailFragment" />
+        <action
+            android:id="@+id/action_questionListFragment_to_questionAddFragment"
+            app:destination="@id/questionAddFragment" />
+
+    </fragment>
 </navigation>

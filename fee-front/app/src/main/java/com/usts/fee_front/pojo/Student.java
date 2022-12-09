@@ -30,6 +30,11 @@ public class Student{
      */
     private String password;
 
+    /**
+     * 角色
+     */
+    private Integer role;
+
     public Integer getId() {
         return id;
     }
@@ -60,5 +65,13 @@ public class Student{
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Integer getRole() {
+        return role;
+    }
+
+    public void setRole(Integer role) {
+        this.role = role;
     }
 }

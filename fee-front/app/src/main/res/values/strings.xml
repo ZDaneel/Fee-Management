@@ -13,4 +13,26 @@
     <string name="setting_student_no">学号:</string>
     <string name="setting_logout">退出登录</string>
     <string name="setting_title">个人信息</string>
+    <string name="title_class_list">班级列表</string>
+    <string name="title_fee_list">账单列表</string>
+    <string name="btn_fee_add">添加账单</string>
+    <string name="title_question_list">问题列表</string>
+    <string name="btn_question_add">添加问题</string>
+    <string name="add_fee_name">支出名称</string>
+    <string name="add_fee_acceptor">验收人</string>
+    <string name="add_fee_money">支出金额</string>
+    <string name="text_fee_image">实物照片</string>
+    <string name="text_note_image">小票照片</string>
+    <string name="add_fee_image">图片</string>
+    <string name="add_fee_camera">add_fee_camera</string>
+    <string name="add_note_image">小票图片</string>
+    <string name="add_note_camera">add_note_camera</string>
+    <string name="fee_add_confirm">确认</string>
+    <string name="add_question_title">标题</string>
+    <string name="add_question_title_hint">请输入质疑的标题</string>
+    <string name="add_question_hint_content">质疑的具体内容…</string>
+    <string name="add_question_content">内容</string>
+    <string name="add_question_button">发布</string>
+    <string name="detail_fee_title">班费详情</string>
+    <string name="btn_check">查看质疑</string>
 </resources>

@@ -28,4 +28,9 @@ public class StudentDTO {
      * 姓名
      */
     private String sname;
+
+    /**
+     * 角色
+     */
+    private Integer role;
 }

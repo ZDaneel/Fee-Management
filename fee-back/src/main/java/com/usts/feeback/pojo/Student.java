@@ -39,5 +39,10 @@ public class Student implements Serializable {
      */
     private String password;
 
+    /**
+     * 角色
+     */
+    private Integer role;
+
     private static final long serialVersionUID = 1L;
 }
