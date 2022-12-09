@@ -44,7 +44,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_main);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
@@ -60,7 +59,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * 登陆处理
+     *
+     * @param view view
+     * @throws JsonProcessingException json异常处理
+     */
     public void login(View view) throws JsonProcessingException {
+        /*
+         * 1. 取出输出的信息(判空交给后端)
+         * 2. 封装Student类并转换成json
+         */
         String sno = binding.studentNo.getText().toString();
         String password = binding.password.getText().toString();
         Student student = new Student();
@@ -68,6 +77,10 @@ public class MainActivity extends AppCompatActivity {
         student.setPassword(password);
         String studentJson = mapper.writeValueAsString(student);
         Log.e(TAG, studentJson);
+        /*
+         * 使用OkHttp进行异步通信
+         * 对onResponse和onFinish进行重写
+         */
         OkHttpUtils.login(NetworkConstants.LOGIN_URL, studentJson, new OkHttpCallback() {
 
             @Override
@@ -79,24 +92,24 @@ public class MainActivity extends AppCompatActivity {
                 ResponseBody body = response.body();
                 if (body != null) {
                     String string = body.string();
-                    System.out.println(string);
-                    // 判断登陆情况
-                    @SuppressWarnings("all")
-                    Result res = mapper.readValue(string, Result.class);
+                    Result<Object> res = mapper.readValue(string, new TypeReference<Result<Object>>() {
+                    });
                     Integer code = res.getCode();
                     String message = res.getMessage();
                     if (ResponseCode.SUCCESS == code) {
-                        // 处理session
+                        /*
+                         * 登陆成功，获取并设置session到本地
+                         */
                         Headers headers = response.headers();
                         List<String> cookies = headers.values("Set-Cookie");
                         String session = cookies.get(0);
                         String sessionId = session.substring(0, session.indexOf(";"));
                         Log.e(TAG, "从后端获得的: " + sessionId);
-                        // 存入文件
                         SharedPreferences share = getSharedPreferences("Session", MODE_PRIVATE);
                         SharedPreferences.Editor edit = share.edit();
                         edit.putString("sessionId", sessionId);
                         edit.apply();
+
                         onFinish(message);
                     } else {
                         handler.post(() -> Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show());
