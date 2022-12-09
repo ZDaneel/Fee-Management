@@ -9,5 +9,10 @@ public class NetworkConstants {
     public static final String BASE_URL = "http://"+ HOST +":"+PORT;
     public static final String STUDENT = "/student";
 
+    /**
+     * 学生相关
+     */
     public static final String LOGIN_URL = BASE_URL + STUDENT + "/login";
+    public static final String QUERY_SELF_URL = BASE_URL + STUDENT + "/query_self";
+    public static final String LOGOUT_URL = BASE_URL + STUDENT + "/logout";
 }

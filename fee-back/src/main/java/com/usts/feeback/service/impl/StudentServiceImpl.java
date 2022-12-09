@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import static com.usts.feeback.utils.Constants.SESSION_STUDENT_DTO;
+
 /**
  * @author leenadz
  * @since 2022-12-08 00:32
@@ -45,7 +47,7 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
         }
         StudentDTO studentDTO = BeanUtil.copyProperties(queryStudent, StudentDTO.class);
         HttpSession session = request.getSession();
-        session.setAttribute("studentDTO", studentDTO);
+        session.setAttribute(SESSION_STUDENT_DTO, studentDTO);
         log.info("请求后返回的sessionId: " + session.getId());
         return Result.success();
     }

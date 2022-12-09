@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
+import static com.usts.feeback.utils.Constants.SESSION_STUDENT_DTO;
+
 /**
  * 登陆拦截器
  * @author leenadz
@@ -18,7 +20,7 @@ public class LoginInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         HttpSession session = request.getSession();
-        StudentDTO studentDTO = (StudentDTO) session.getAttribute("studentDTO");
+        StudentDTO studentDTO = (StudentDTO) session.getAttribute(SESSION_STUDENT_DTO);
         if (studentDTO == null) {
             falseResult(response);
             return false;

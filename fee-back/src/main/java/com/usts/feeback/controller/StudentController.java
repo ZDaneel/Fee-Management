@@ -1,9 +1,11 @@
 package com.usts.feeback.controller;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.usts.feeback.dto.StudentDTO;
 import com.usts.feeback.pojo.Student;
 import com.usts.feeback.service.StudentService;
 import com.usts.feeback.utils.Result;
+import com.usts.feeback.utils.StudentHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.List;
+
+import static com.usts.feeback.utils.Constants.SESSION_STUDENT_DTO;
 
 /**
  * @author leenadz
@@ -40,5 +44,20 @@ public class StudentController {
     @PostMapping("/login")
     public Result<Boolean> login(@RequestBody Student student, HttpServletRequest request) {
         return studentService.login(student, request);
+    }
+
+    /**
+     * 在拦截器中取出查询的用户，直接返回DTO数据
+     * @return Result封装的StudentDTO数据
+     */
+    @GetMapping("/query_self")
+    public Result<StudentDTO> querySelf() {
+        return Result.success(StudentHolder.getStudent());
+    }
+
+    @GetMapping("logout")
+    public Result<Boolean> logout(HttpServletRequest request) {
+        request.getSession().removeAttribute(SESSION_STUDENT_DTO);
+        return Result.success();
     }
 }
