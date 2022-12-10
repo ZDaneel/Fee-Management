@@ -1,6 +1,7 @@
 package com.usts.feeback.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.usts.feeback.dto.StudentDTO;
 import com.usts.feeback.pojo.Student;
 import com.usts.feeback.utils.Result;
 
@@ -17,5 +18,12 @@ public interface StudentService extends IService<Student> {
      * @param request request
      * @return 结果
      */
-    Result<Boolean> login(Student student, HttpServletRequest request);
+    Result<StudentDTO> login(Student student, HttpServletRequest request);
+
+    /**
+     * 根据班级id查询当前用户的权限
+     * @param classId 班级id
+     * @return 权限
+     */
+    Integer queryRole(Integer classId);
 }

@@ -1,6 +1,5 @@
 package com.usts.feeback.pojo;
 
-import java.io.Serializable;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -9,15 +8,19 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 /**
- * college_student
- * @author zdaneel
+ * (CollegeClass)表实体类
+ *
+ * @author makejava
+ * @since 2022-12-10 00:08:21
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@TableName("college_student")
-public class Student implements Serializable {
+@TableName("college_class")
+public class CollegeClass implements Serializable {
     /**
      * 主键
      */
@@ -25,19 +28,15 @@ public class Student implements Serializable {
     private Integer id;
 
     /**
-     * 学号
+     * 班级名
      */
-    private String sno;
+    private String cname;
 
     /**
-     * 姓名
+     * 创建者
      */
-    private String sname;
-
-    /**
-     * 密码
-     */
-    private String password;
+    private Integer creator;
 
     private static final long serialVersionUID = 1L;
 }
+

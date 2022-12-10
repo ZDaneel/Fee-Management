@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:text="@string/title_fee_list"
         android:textSize="30sp"
-        app:layout_constraintBottom_toTopOf="@+id/btn_fee_add"
+        app:layout_constraintBottom_toTopOf="@+id/btn_fee_closed"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.054"
         app:layout_constraintStart_toStartOf="parent"
@@ -19,11 +19,10 @@
         app:layout_constraintVertical_bias="1.0" />
 
     <Button
-        android:id="@+id/btn_fee_add"
-        android:layout_width="103dp"
-        android:layout_height="38dp"
-        android:enabled="false"
-        android:text="@string/btn_fee_add"
+        android:id="@+id/btn_fee_closed"
+        android:layout_width="105dp"
+        android:layout_height="40dp"
+        android:text="@string/btn_fee_closed"
         app:layout_constraintBottom_toTopOf="@+id/fee_list"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.051"
@@ -37,6 +36,20 @@
         android:layout_height="593dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btn_fee_add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:contentDescription="@string/fee_add"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.954"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.882"
+        app:srcCompat="@drawable/ic_dialog_add" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

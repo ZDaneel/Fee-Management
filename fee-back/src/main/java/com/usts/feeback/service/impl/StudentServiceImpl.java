@@ -9,9 +9,11 @@ import com.usts.feeback.dto.StudentDTO;
 import com.usts.feeback.pojo.Student;
 import com.usts.feeback.service.StudentService;
 import com.usts.feeback.utils.Result;
+import com.usts.feeback.utils.StudentHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -25,8 +27,11 @@ import static com.usts.feeback.utils.Constants.SESSION_STUDENT_DTO;
 @Slf4j
 public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> implements StudentService {
 
+    @Resource
+    private StudentMapper studentMapper;
+
     @Override
-    public Result<Boolean> login(Student student, HttpServletRequest request) {
+    public Result<StudentDTO> login(Student student, HttpServletRequest request) {
         String sno = student.getSno();
         String password = student.getPassword();
         if (StrUtil.hasEmpty(sno)) {
@@ -48,7 +53,13 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
         StudentDTO studentDTO = BeanUtil.copyProperties(queryStudent, StudentDTO.class);
         HttpSession session = request.getSession();
         session.setAttribute(SESSION_STUDENT_DTO, studentDTO);
-        log.info("请求后返回的sessionId: " + session.getId());
-        return Result.success();
+        return Result.success(studentDTO);
+    }
+
+    @Override
+    public Integer queryRole(Integer classId) {
+        Integer studentId = StudentHolder.getStudent().getId();
+        return studentMapper.queryRole(studentId, classId);
+
     }
 }

@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.usts.fee_front.MyApplication;
 
@@ -59,9 +60,14 @@ public class OkHttpCallback implements Callback {
                 String message = res.getMessage();
                 Log.d(TAG, "请求成功:" + result);
                 if (ResponseCode.SUCCESS == code) {
-                    onFinish(result);
+                    JsonNode jsonNode = mapper.readTree(result).get("data");
+                    if (jsonNode == null) {
+                        onFinish(null);
+                    } else {
+                        onFinish(jsonNode.toString());
+                    }
                 } else {
-                    handler.post(() -> Toast.makeText(MyApplication.context, message, Toast.LENGTH_SHORT).show());
+                    handler.post(() -> Toast.makeText(MyApplication.getContext(), message, Toast.LENGTH_SHORT).show());
                 }
             }
         }
@@ -77,17 +83,17 @@ public class OkHttpCallback implements Callback {
     public void onFailure(@NonNull Call call, IOException e) {
         Log.d(TAG, "请求失败:" + e.toString());
         Log.d(TAG, "url:" + url);
-        handler.post(() -> Toast.makeText(MyApplication.context, "请求失败:", Toast.LENGTH_SHORT).show());
+        handler.post(() -> Toast.makeText(MyApplication.getContext(), "请求失败:", Toast.LENGTH_SHORT).show());
     }
 
     /**
      * 结束处理，实现类进行重写
-     * 不直接返回msg里的data数据是因为Object强转容易出问题
+     * jsonNode为json中data的数据
      *
-     * @param msg json信息
+     * @param dataJson data的json信息
      * @throws JsonProcessingException Json处理异常
      */
-    public void onFinish(String msg) throws JsonProcessingException {
+    public void onFinish(String dataJson) throws JsonProcessingException {
     }
 
 }

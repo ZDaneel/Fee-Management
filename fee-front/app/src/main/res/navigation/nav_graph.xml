@@ -29,12 +29,21 @@
         <action
             android:id="@+id/action_feeListFragment_to_feeDetailFragment"
             app:destination="@id/feeDetailFragment" />
+        <argument
+            android:name="class_id"
+            app:argType="integer"
+            android:defaultValue="-1" />
     </fragment>
     <fragment
         android:id="@+id/feeAddFragment"
         android:name="com.usts.fee_front.fragment.FeeAddFragment"
         android:label="FeeAddFragment"
-        tools:layout="@layout/fragment_fee_add" />
+        tools:layout="@layout/fragment_fee_add" >
+        <argument
+            android:name="class_id"
+            app:argType="integer"
+            android:defaultValue="-1" />
+    </fragment>
 
     <fragment
         android:id="@+id/feeDetailFragment"

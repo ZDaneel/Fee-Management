@@ -43,7 +43,7 @@
         android:ems="10"
         android:hint="@string/add_fee_money"
         android:importantForAutofill="no"
-        android:inputType="text"
+        android:inputType="numberDecimal"
         android:textSize="13sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.476"
@@ -121,7 +121,7 @@
         android:contentDescription="@string/add_note_camera" />
 
     <Button
-        android:id="@+id/btn_edit"
+        android:id="@+id/btn_confirm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@color/cardview_light_background"

@@ -47,7 +47,7 @@ public class StudentController {
 
     @ApiOperation(value = "登录操作")
     @PostMapping("/login")
-    public Result<Boolean> login(@RequestBody Student student, HttpServletRequest request) {
+    public Result<StudentDTO> login(@RequestBody Student student, HttpServletRequest request) {
         return studentService.login(student, request);
     }
 
@@ -55,10 +55,10 @@ public class StudentController {
      * 在拦截器中取出查询的用户，直接返回DTO数据
      * @return Result封装的StudentDTO数据
      */
-    @ApiOperation(value = "查询当前用户信息")
-    @GetMapping("/query_self")
-    public Result<StudentDTO> querySelf() {
-        return Result.success(StudentHolder.getStudent());
+    @ApiOperation(value = "查询当前用户权限信息", hidden = true)
+    @GetMapping("/role/{classId}")
+    public Result<Integer> queryRole(@PathVariable("classId")Integer classId) {
+        return Result.success(studentService.queryRole(classId));
     }
 
     @ApiOperation(value = "登出操作")

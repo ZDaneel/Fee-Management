@@ -8,7 +8,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -17,7 +16,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.usts.fee_front.databinding.ActivityLoginBinding;
-import com.usts.fee_front.databinding.ActivityMainBinding;
 import com.usts.fee_front.pojo.Student;
 import com.usts.fee_front.utils.NetworkConstants;
 import com.usts.fee_front.utils.OkHttpCallback;
@@ -81,12 +79,11 @@ public class LoginActivity extends AppCompatActivity {
         Student student = new Student();
         student.setSno(sno);
         student.setPassword(password);
-        String studentJson = mapper.writeValueAsString(student);
-        Log.e(TAG, studentJson);
         /*
          * 使用OkHttp进行异步通信
          * 对onResponse和onFinish进行重写
          */
+        String studentJson = mapper.writeValueAsString(student);
         OkHttpUtils.login(NetworkConstants.LOGIN_URL, studentJson, new OkHttpCallback() {
 
             @Override
@@ -98,14 +95,17 @@ public class LoginActivity extends AppCompatActivity {
                 ResponseBody body = response.body();
                 if (body != null) {
                     String string = body.string();
-                    Result<Object> res = mapper.readValue(string, new TypeReference<Result<Object>>() {
+                    Result<Student> res = mapper.readValue(string, new TypeReference<Result<Student>>() {
                     });
                     Integer code = res.getCode();
                     String message = res.getMessage();
+                    Student data = res.getData();
                     if (ResponseCode.SUCCESS == code) {
                         /*
+                         * 将学生数据存储到Application中
                          * 登陆成功，获取并设置session到本地
                          */
+                        MyApplication.setStudent(data);
                         Headers headers = response.headers();
                         List<String> cookies = headers.values("Set-Cookie");
                         String session = cookies.get(0);
@@ -115,8 +115,7 @@ public class LoginActivity extends AppCompatActivity {
                         SharedPreferences.Editor edit = share.edit();
                         edit.putString("sessionId", sessionId);
                         edit.apply();
-
-                        onFinish(message);
+                        onFinish(null);
                     } else {
                         handler.post(() -> Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show());
                     }
@@ -124,13 +123,10 @@ public class LoginActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFinish(String msg) {
-
+            public void onFinish(String dataJson) {
                 handler.post(() -> {
-                    // 清空数据
                     binding.studentNo.setText("");
                     binding.password.setText("");
-                    // 处理页面的跳转
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
                     finish();
@@ -143,10 +139,8 @@ public class LoginActivity extends AppCompatActivity {
         OkHttpUtils.get(NetworkConstants.BASE_URL + "/student/query/1",
                 new OkHttpCallback() {
                     @Override
-                    public void onFinish(String msg) throws JsonProcessingException {
-                        Result<Student> res = mapper.readValue(msg, new TypeReference<Result<Student>>() {
-                        });
-                        Student student = res.getData();
+                    public void onFinish(String dataJson) throws JsonProcessingException {
+                        Student student = mapper.readValue(dataJson, Student.class);
                         handler.post(() -> binding.studentNo.setText(student.toString()));
                     }
                 });

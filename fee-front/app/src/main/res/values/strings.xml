@@ -15,7 +15,7 @@
     <string name="setting_title">个人信息</string>
     <string name="title_class_list">班级列表</string>
     <string name="title_fee_list">账单列表</string>
-    <string name="btn_fee_add">添加账单</string>
+    <string name="btn_fee_closed">查看归档</string>
     <string name="title_question_list">问题列表</string>
     <string name="btn_question_add">添加问题</string>
     <string name="add_fee_name">支出名称</string>
@@ -35,4 +35,12 @@
     <string name="add_question_button">发布</string>
     <string name="detail_fee_title">班费详情</string>
     <string name="btn_check">查看质疑</string>
+    <string name="class_name">班级名: </string>
+    <string name="class_number">班级人数: </string>
+    <string name="fee_name">支出名称: </string>
+    <string name="fee_acceptor">验收人: </string>
+    <string name="fee_money">金额: </string>
+    <string name="fee_date">日期: </string>
+    <string name="fee_image">班费实物图片</string>
+    <string name="fee_add">添加账单</string>
 </resources>

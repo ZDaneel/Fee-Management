@@ -8,11 +8,25 @@ public class NetworkConstants {
     private static final String PORT = "8096";
     public static final String BASE_URL = "http://"+ HOST +":"+PORT;
     public static final String STUDENT = "/student";
+    public static final String COLLEGE_CLASS = "/college-class";
+    public static final String FEE = "/fee";
 
     /**
      * 学生相关
      */
     public static final String LOGIN_URL = BASE_URL + STUDENT + "/login";
-    public static final String QUERY_SELF_URL = BASE_URL + STUDENT + "/query_self";
     public static final String LOGOUT_URL = BASE_URL + STUDENT + "/logout";
+    public static final String QUERY_ROLE_URL = BASE_URL + STUDENT + "/role/";
+
+    /**
+     * 班级相关
+     */
+    public static final String QUERY_CLASSES_URL = BASE_URL + COLLEGE_CLASS + "/classes";
+
+    /**
+     * 支出相关
+     */
+    public static final String QUERY_OPEN_FEES_URL = BASE_URL + FEE + "/open-fees/";
+    public static final String QUERY_CLOSED_FEES_URL = BASE_URL + FEE + "/closed-fees/";
+    public static final String INSERT_FEE_URL = BASE_URL + FEE + "/fee";
 }

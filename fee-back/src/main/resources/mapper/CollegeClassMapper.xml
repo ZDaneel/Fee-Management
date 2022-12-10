@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.usts.feeback.dao.CollegeClassMapper">
+
+    <select id="queryClassIdsByStudentId" resultType="java.lang.Integer">
+        select cid
+        from college_student_class
+        where sid = #{studentId}
+    </select>
+
+    <select id="countStudentNumber" resultType="java.lang.Integer">
+        select count(sid)
+        from college_student_class
+        where cid = #{classId}
+    </select>
+
+</mapper>
