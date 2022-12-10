@@ -43,4 +43,5 @@
     <string name="fee_date">日期: </string>
     <string name="fee_image">班费实物图片</string>
     <string name="fee_add">添加账单</string>
+    <string name="fee_add_clear">清空</string>
 </resources>

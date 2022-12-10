@@ -40,17 +40,4 @@ public class FeeController {
     public Result<Boolean> insertFee(@RequestBody Fee fee) {
         return feeService.insertFee(fee);
     }
-
-    @ApiOperation(value = "确认支出")
-    @GetMapping("/confirm/{feeId}")
-    public Result<Boolean> confirmFee(@PathVariable("feeId") Integer feeId) {
-        return feeService.confirmFee(feeId);
-    }
-
-    @ApiOperation(value = "取消确认支出")
-    @GetMapping("/cancel/{feeId}")
-    public Result<Boolean> cancelFee(@PathVariable("feeId") Integer feeId) {
-        return feeService.cancelFee(feeId);
-    }
-
 }

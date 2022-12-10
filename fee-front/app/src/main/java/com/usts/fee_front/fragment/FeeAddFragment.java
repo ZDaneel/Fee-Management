@@ -39,6 +39,12 @@ public class FeeAddFragment extends Fragment {
         binding = FragmentFeeAddBinding.inflate(inflater, container, false);
         int classId = FeeListFragmentArgs.fromBundle(getArguments()).getClassId();
         handleConfirmButton(classId);
+        binding.btnClear.setOnClickListener(view -> {
+            // TODO 清空图片
+            binding.addFeeName.setText("");
+            binding.addFeeMoney.setText("");
+            binding.addFeeAcceptor.setText("");
+        });
         return binding.getRoot();
     }
 

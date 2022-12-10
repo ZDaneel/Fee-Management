@@ -11,8 +11,12 @@ public class Constants {
     public static final String SESSION_STUDENT_DTO = "studentDTO";
 
     /**
-     * Redis
+     * Redis存储
      */
-    public static final String FEE_KEY = "fee:";
-    public static final Long FEE_KEY_TTL = 10L;
+    public static final String COMMENT_KEY = "comment:";
+
+    /**
+     * 过期时间
+     */
+    public static final Long FEE_TTL = 7L;
 }

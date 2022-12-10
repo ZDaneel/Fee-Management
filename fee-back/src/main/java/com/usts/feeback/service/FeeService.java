@@ -27,18 +27,4 @@ public interface FeeService extends IService<Fee> {
      * @return 处理结果
      */
     Result<Boolean> insertFee(Fee fee);
-
-    /**
-     * 确认支出
-     * @param feeId 支出id
-     * @return 处理结果
-     */
-    Result<Boolean> confirmFee(Integer feeId);
-
-    /**
-     * 取消支出
-     * @param feeId 支出id
-     * @return 处理结果
-     */
-    Result<Boolean> cancelFee(Integer feeId);
 }
