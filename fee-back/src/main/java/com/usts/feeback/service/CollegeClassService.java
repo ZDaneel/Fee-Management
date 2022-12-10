@@ -20,5 +20,12 @@ public interface CollegeClassService extends IService<CollegeClass> {
      * @return 班级列表
      */
     List<CollegeClassDTO> queryClasses();
+
+    /**
+     * 根据班级id查询班级内人数
+     * @param classId 班级id
+     * @return 班级内人数
+     */
+    Integer getStudentCount(Integer classId);
 }
 

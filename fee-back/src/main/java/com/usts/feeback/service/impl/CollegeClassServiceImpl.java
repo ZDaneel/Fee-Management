@@ -42,12 +42,17 @@ public class CollegeClassServiceImpl extends ServiceImpl<CollegeClassMapper, Col
         List<CollegeClass> collegeClassList = listByIds(classIds);
         List<CollegeClassDTO> collegeClassDTOList = new ArrayList<>();
         collegeClassList.forEach(collegeClass -> {
-            Integer number = collegeClassMapper.countStudentNumber(collegeClass.getId());
             CollegeClassDTO collegeClassDTO = BeanUtil.copyProperties(collegeClass, CollegeClassDTO.class);
+            Integer number = getStudentCount(collegeClass.getId());
             collegeClassDTO.setNumber(number);
             collegeClassDTOList.add(collegeClassDTO);
         });
         return collegeClassDTOList;
+    }
+
+    @Override
+    public Integer getStudentCount(Integer classId) {
+        return collegeClassMapper.countStudentNumber(classId);
     }
 }
 
