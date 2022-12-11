@@ -56,9 +56,9 @@ public class ServiceTest {
     @Test
     void testQueryComment() {
         LambdaQueryWrapper<Comment> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        lambdaQueryWrapper.eq(Comment::getTargetId, 1).eq(Comment::getPid, 0).select(Comment::getUserId);
+        lambdaQueryWrapper.eq(Comment::getTargetId, 1).eq(Comment::getPid, 0).select(Comment::getStudentId);
         List<Comment> commentList = commentService.list(lambdaQueryWrapper);
-        List<Integer> integerList = commentList.stream().map(Comment::getUserId).collect(Collectors.toList());
+        List<Integer> integerList = commentList.stream().map(Comment::getStudentId).collect(Collectors.toList());
         commentList.forEach(System.out::println);
         integerList.forEach(System.out::println);
     }
@@ -71,5 +71,19 @@ public class ServiceTest {
     @Test
     void testQueryOpenFees() {
         feeService.queryOpenFees(1);
+    }
+
+    @Test
+    void testAddComment() {
+        Comment comment = new Comment();
+        comment.setId(1);
+        commentService.insertParentComment(comment);
+        comment.setId(2);
+        commentService.insertParentComment(comment);
+    }
+
+    @Test
+    void testQueryOpenParentComments() {
+        commentService.queryOpenParentComments(1);
     }
 }

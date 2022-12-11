@@ -10,6 +10,7 @@ public class NetworkConstants {
     public static final String STUDENT = "/student";
     public static final String COLLEGE_CLASS = "/college-class";
     public static final String FEE = "/fee";
+    public static final String COMMENT = "/comment";
 
     /**
      * 学生相关
@@ -29,4 +30,12 @@ public class NetworkConstants {
     public static final String QUERY_OPEN_FEES_URL = BASE_URL + FEE + "/open-fees/";
     public static final String QUERY_CLOSED_FEES_URL = BASE_URL + FEE + "/closed-fees/";
     public static final String INSERT_FEE_URL = BASE_URL + FEE + "/fee";
+    public static final String QUERY_FEE_URL = BASE_URL + FEE + "/fee/";
+    public static final String QUERY_FEE_STATUS_URL = BASE_URL + FEE + "/status/";
+
+    /**
+     * 评论相关
+     */
+    public static final String QUERY_OPEN_COMMENTS_URL = BASE_URL + COMMENT + "/open-comments/";
+    public static final String INSERT_PARENT_COMMENT_URL = BASE_URL + COMMENT + "/parent-comment";
 }

@@ -40,4 +40,16 @@ public class FeeController {
     public Result<Boolean> insertFee(@RequestBody Fee fee) {
         return feeService.insertFee(fee);
     }
+
+    @ApiOperation(value = "根据id查询fee详情")
+    @GetMapping("/fee/{feeId}")
+    public Result<Fee> queryFee(@PathVariable("feeId") Integer feeId) {
+        return Result.success(feeService.getById(feeId));
+    }
+
+    @ApiOperation(value = "查询支出状态 是否关闭")
+    @GetMapping("/status/{feeId}")
+    public Result<Integer> queryFeeStatus(@PathVariable("feeId") Integer feeId) {
+        return Result.success(feeService.queryFeeStatus(feeId));
+    }
 }

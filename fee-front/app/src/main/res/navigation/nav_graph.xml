@@ -51,33 +51,49 @@
         android:label="FeeDetailFragment"
         tools:layout="@layout/fragment_fee_detail">
         <action
-            android:id="@+id/action_feeDetailFragment_to_questionListFragment"
-            app:destination="@id/questionListFragment" />
+            android:id="@+id/action_feeDetailFragment_to_commentListFragment"
+            app:destination="@id/commentListFragment" />
+        <argument
+            android:name="fee_id"
+            app:argType="integer"
+            android:defaultValue="-1" />
     </fragment>
 
     <fragment
-        android:id="@+id/questionDetailFragment"
-        android:name="com.usts.fee_front.fragment.QuestionDetailFragment"
-        android:label="QuestionDetailFragment"
-        tools:layout="@layout/fragment_question_detail"/>
+        android:id="@+id/commentDetailFragment"
+        android:name="com.usts.fee_front.fragment.CommentDetailFragment"
+        android:label="CommentDetailFragment"
+        tools:layout="@layout/fragment_comment_detail"/>
 
     <fragment
-        android:id="@+id/questionAddFragment"
-        android:name="com.usts.fee_front.fragment.QuestionAddFragment"
-        android:label="QuestionAddFragment"
-        tools:layout="@layout/fragment_question_add"/>
+        android:id="@+id/commentAddFragment"
+        android:name="com.usts.fee_front.fragment.CommentAddFragment"
+        android:label="CommentAddFragment"
+        tools:layout="@layout/fragment_comment_add">
+        <argument
+            android:name="fee_id"
+            app:argType="integer"
+            android:defaultValue="-1" />
+        <action
+            android:id="@+id/action_commentAddFragment_to_commentListFragment"
+            app:destination="@id/commentListFragment" />
+    </fragment>
 
     <fragment
-        android:id="@+id/questionListFragment"
-        android:name="com.usts.fee_front.fragment.QuestionListFragment"
-        android:label="QuestionListFragment"
-        tools:layout="@layout/fragment_question_list">
+        android:id="@+id/commentListFragment"
+        android:name="com.usts.fee_front.fragment.CommentListFragment"
+        android:label="CommentListFragment"
+        tools:layout="@layout/fragment_comment_list">
         <action
-            android:id="@+id/action_questionListFragment_to_questionDetailFragment"
-            app:destination="@id/questionDetailFragment" />
+            android:id="@+id/action_commentListFragment_to_commentDetailFragment"
+            app:destination="@id/commentDetailFragment" />
         <action
-            android:id="@+id/action_questionListFragment_to_questionAddFragment"
-            app:destination="@id/questionAddFragment" />
+            android:id="@+id/action_commentListFragment_to_commentAddFragment"
+            app:destination="@id/commentAddFragment" />
+        <argument
+            android:name="fee_id"
+            app:argType="integer"
+            android:defaultValue="-1" />
 
     </fragment>
 </navigation>

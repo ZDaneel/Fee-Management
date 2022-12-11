@@ -7,6 +7,7 @@ import com.usts.feeback.pojo.Comment;
 import com.usts.feeback.pojo.Fee;
 import com.usts.feeback.service.CollegeClassService;
 import com.usts.feeback.service.CommentService;
+import com.usts.feeback.service.FeeService;
 import com.usts.feeback.utils.Result;
 import com.usts.feeback.utils.StudentHolder;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -21,6 +22,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import static com.usts.feeback.utils.Constants.CLOSED;
 import static com.usts.feeback.utils.Constants.COMMENT_KEY;
 
 /**
@@ -29,12 +31,16 @@ import static com.usts.feeback.utils.Constants.COMMENT_KEY;
  * @author makejava
  * @since 2022-12-10 20:20:27
  */
-@Service()
+@Service
 public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> implements CommentService {
     @Resource
     private StringRedisTemplate stringRedisTemplate;
     @Resource
     private CollegeClassService collegeClassService;
+    @Resource
+    private FeeService feeService;
+    @Resource
+    private CommentMapper commentMapper;
 
     /**
      * 关闭评论线程池，并发量小，但不能失败，使用CallerRunsPolicy策略
@@ -54,10 +60,11 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
             Executors.defaultThreadFactory(),
             new ThreadPoolExecutor.CallerRunsPolicy());
 
+    /**
+     * 异步评论关闭处理
+     */
     private class CommentCloseHandler implements Runnable {
-
         private final Comment comment;
-
         public CommentCloseHandler(Comment comment) {
             this.comment = comment;
         }
@@ -69,22 +76,66 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
 
     /**
      * 异步任务
+     *
      * @param comment 要关闭的评论
      */
     private void commentCloseAsyn(Comment comment) {
-        System.out.println("开始执行异步任务");
+        System.out.println("=============开始执行异步任务=============");
+        comment.setClosed(1);
+        updateById(comment);
+        String key =  COMMENT_KEY + comment.getId();
+        stringRedisTemplate.delete(key);
+    }
 
-        /*fee.setClosed(1);
-        updateById(fee);*/
+    @Override
+    public List<Comment> queryOpenParentComments(Integer feeId) {
+        /*
+         * 查询未关闭的父级评论
+         */
+        List<Comment> commentList = commentMapper.queryOpenParentComments(feeId);
+        commentList.forEach(System.out::println);
+        System.out.println("=============下面为可以关闭的评论==============");
+        /*
+         * 过滤出可以关闭的评论列表
+         */
+        List<Comment> closedCommentList = commentList.stream()
+                .filter(this::judgeClosed)
+                .collect(Collectors.toList());
+        closedCommentList.forEach(System.out::println);
+        System.out.println("=============下面为开放的评论==============");
+        List<Comment> openCommentList = commentList.stream()
+                .filter(comment -> !closedCommentList.contains(comment))
+                .collect(Collectors.toList());
+        openCommentList.forEach(System.out::println);
+        /*
+         * 开启异步任务
+         */
+        for (Comment comment : closedCommentList) {
+            CommentCloseHandler commentCloseHandler = new CommentCloseHandler(comment);
+            COMMENT_CLOSE_EXECUTOR.submit(commentCloseHandler);
+        }
+        return openCommentList;
+    }
+
+    @Override
+    public Result<Boolean> insertParentComment(Comment comment) {
+        //save(comment); TODO
+        Integer commentId = comment.getId();
+        if (commentId == null) {
+            return Result.error("插入失败");
+        }
+        String key =  COMMENT_KEY + commentId;
+        stringRedisTemplate.opsForSet().add(key, "0");
+        return Result.success();
     }
 
     /**
      * 判断是否可以关闭
      *
-     * @param fee 账单
+     * @param comment 评论
      * @return false-不能 true-可以
      */
-    private boolean judgeClosed(Fee fee) {
+    private boolean judgeClosed(Comment comment) {
 
         /*
          * 判断是否有Fee可以关闭
@@ -92,8 +143,8 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
          *      - 如果不存在，说明已经过期，则直接关闭
          *      - 注意key查询不到时返回的[]，而不是null
          */
-        Integer feeId = fee.getId();
-        String key = COMMENT_KEY + feeId;
+        Integer commentId = comment.getId();
+        String key = COMMENT_KEY + commentId;
         Set<String> confirmSet = stringRedisTemplate.opsForSet().members(key);
         if (confirmSet == null) {
             return true;
@@ -102,32 +153,32 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
             return true;
         }
         /*
-         * 2. 根据班级id查询发起质疑的学生ids
-         *      - 查询当前fee对应的且pid为0（不是回复）的comment
-         *      - ids都在集合内，说明质疑者都已经确认
+         * 2. 判断发起质疑者是否在集合内
          */
-        LambdaQueryWrapper<Comment> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        lambdaQueryWrapper
-                .eq(Comment::getTargetId, feeId)
-                .eq(Comment::getPid, 0)
-                .select(Comment::getUserId);
-        List<Comment> commentList = list(lambdaQueryWrapper);
-        List<Integer> commentUserIdList = commentList
-                .stream()
-                .map(Comment::getUserId)
-                .collect(Collectors.toList());
-        for (Integer commentUserId : commentUserIdList) {
-            if (!confirmSet.contains(commentUserId.toString())) {
-                return false;
-            }
+        if (!confirmSet.contains(comment.getStudentId().toString())) {
+            return false;
         }
         /*
-         * 3. 根据班级id查询人数
+         * 3. 查询对应的fee是否已经关闭
+         */
+        Integer feeId = comment.getTargetId();
+        LambdaQueryWrapper<Fee> feeLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        feeLambdaQueryWrapper
+                .eq(Fee::getId, feeId)
+                .select(Fee::getCollegeClassId, Fee::getClosed);
+        Fee fee = feeService.getOne(feeLambdaQueryWrapper);
+        Integer feeStatus = fee.getClosed();
+        if (CLOSED == feeStatus) {
+            return true;
+        }
+        /*
+         * 4. 根据班级id查询人数
          *      - 确认人数超过总人数的一半，说明可以关闭
          *      - 集合中有一个假数据，需要-1才能得到真正确认的人数
          *      - 人数为1做特殊处理，否则会出现1>1的情况
          */
-        Integer studentCount = collegeClassService.getStudentCount(fee.getCollegeClassId());
+        Integer classId = fee.getCollegeClassId();
+        Integer studentCount = collegeClassService.getStudentCount(classId);
         studentCount = studentCount / 2;
         int confirmCount = confirmSet.size() - 1;
         if (confirmCount == 1 && studentCount == 1) {
@@ -136,33 +187,22 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         return confirmCount > studentCount;
     }
 
-/*    @Override
-    public Result<Boolean> confirmFee(Integer feeId) {
-        *//*
-         * 往Redis对应的key中加入当前用户的id
-         *//*
+    @Override
+    public Result<Boolean> confirmComment(Integer commentId) {
+        // 往Redis对应的key中加入当前用户的id
         Integer studentId = StudentHolder.getStudent().getId();
-        String key = COMMENT_KEY + feeId;
+        String key = COMMENT_KEY + commentId;
         stringRedisTemplate.opsForSet().add(key, studentId.toString());
         return Result.success();
     }
 
     @Override
-    public Result<Boolean> cancelFee(Integer feeId) {
-        *//*
-         * 往Redis对应的key中移除当前用户的id
-         *//*
+    public Result<Boolean> cancelComment(Integer commentId) {
+        // 往Redis对应的key中移除当前用户的id
         Integer studentId = StudentHolder.getStudent().getId();
-        String key = COMMENT_KEY + feeId;
+        String key = COMMENT_KEY + commentId;
         stringRedisTemplate.opsForSet().remove(key, studentId.toString());
         return Result.success();
-    }*/
-
-    /*        List<Fee> openFeeList = feeList.stream()
-                .filter(fee -> BooleanUtil.isFalse(judgeClosed(fee)))
-                .collect(Collectors.toList());
-        List<Fee> closeFeeList = feeList.stream()
-                .filter(fee -> !openFeeList.contains(fee))
-                .collect(Collectors.toList());*/
+    }
 }
 

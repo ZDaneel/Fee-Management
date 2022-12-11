@@ -19,4 +19,9 @@ public class Constants {
      * 过期时间
      */
     public static final Long FEE_TTL = 7L;
+
+    /**
+     * 是否已经关闭
+     */
+    public static final int CLOSED = 1;
 }

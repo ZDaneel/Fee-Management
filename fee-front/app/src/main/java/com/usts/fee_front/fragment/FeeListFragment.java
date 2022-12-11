@@ -107,7 +107,12 @@ public class FeeListFragment extends Fragment {
                 handler.post(() -> {
                     feeAdapter = new FeeAdapter(feeList);
                     FeeAdapter.CallBack callBack = fee -> {
-                        // TODO 点击跳转接口
+                        Bundle bundle = new FeeDetailFragmentArgs.Builder()
+                                .setFeeId(fee.getId())
+                                .build()
+                                .toBundle();
+                        NavHostFragment.findNavController(FeeListFragment.this)
+                                .navigate(R.id.action_feeListFragment_to_feeDetailFragment, bundle);
                     };
                     feeAdapter.setCallBack(callBack);
                     feeRecyclerView.setAdapter(feeAdapter);

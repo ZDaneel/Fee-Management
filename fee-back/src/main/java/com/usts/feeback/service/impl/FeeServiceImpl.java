@@ -34,13 +34,6 @@ import static com.usts.feeback.utils.Constants.FEE_TTL;
 @Service
 @Slf4j
 public class FeeServiceImpl extends ServiceImpl<FeeMapper, Fee> implements FeeService {
-
-    @Resource
-    private CommentService commentService;
-
-    @Resource
-    private CollegeClassService collegeClassService;
-
     @Override
     public List<Fee> queryOpenFees(Integer classId) {
         /*
@@ -83,6 +76,14 @@ public class FeeServiceImpl extends ServiceImpl<FeeMapper, Fee> implements FeeSe
             return Result.error("新增fee失败");
         }
         return Result.success();
+    }
+
+    @Override
+    public Integer queryFeeStatus(Integer feeId) {
+        LambdaQueryWrapper<Fee> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(Fee::getId, feeId).select(Fee::getClosed);
+        Fee one = getOne(lambdaQueryWrapper);
+        return one.getClosed();
     }
 
     /**

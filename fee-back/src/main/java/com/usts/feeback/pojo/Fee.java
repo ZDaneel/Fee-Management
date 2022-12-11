@@ -1,6 +1,7 @@
 package com.usts.feeback.pojo;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
@@ -26,6 +27,7 @@ public class Fee implements Serializable {
      */
     @TableId(type = IdType.AUTO)
     private Integer id;
+
     /**
      * 支出名称
      */

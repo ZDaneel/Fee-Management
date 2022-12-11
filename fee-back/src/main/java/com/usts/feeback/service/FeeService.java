@@ -3,6 +3,7 @@ package com.usts.feeback.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.usts.feeback.pojo.Fee;
 import com.usts.feeback.utils.Result;
+import io.swagger.models.auth.In;
 
 import java.util.List;
 
@@ -27,4 +28,11 @@ public interface FeeService extends IService<Fee> {
      * @return 处理结果
      */
     Result<Boolean> insertFee(Fee fee);
+
+    /**
+     * 查询支出状态
+     * @param feeId 支出id
+     * @return 是否关闭
+     */
+    Integer queryFeeStatus(Integer feeId);
 }

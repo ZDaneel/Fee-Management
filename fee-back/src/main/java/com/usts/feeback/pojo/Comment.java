@@ -3,6 +3,7 @@ package com.usts.feeback.pojo;
 import java.util.Date;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
@@ -52,12 +53,24 @@ public class Comment implements Serializable {
     /**
      * 作者id
      */
-    private Integer userId;
+    private Integer studentId;
+
+    /**
+     * 作者名字
+     */
+    @TableField(exist = false)
+    private String studentName;
 
     /**
      * 对谁的回复
      */
-    private Integer toUserId;
+    private Integer toStudentId;
+
+    /**
+     * 对谁的回复名字
+     */
+    @TableField(exist = false)
+    private String toStudentName;
 
     /**
      * 创建时间
@@ -68,6 +81,11 @@ public class Comment implements Serializable {
      * 更新时间
      */
     private Date updateTime;
+
+    /**
+     * 是否关闭 0-开启 1-关闭
+     */
+    private Integer closed;
 
     private static final long serialVersionUID = 1L;
 

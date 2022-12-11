@@ -66,7 +66,7 @@ public class FeeAddFragment extends Fragment {
             fee.setCollegeClassId(classId);
             try {
                 String feeJson = mapper.writeValueAsString(fee);
-                OkHttpUtils.post(NetworkConstants.INSERT_FEE_URL, feeJson, new OkHttpCallback() {
+                OkHttpUtils.post(NetworkConstants.INSERT_PARENT_COMMENT_URL, feeJson, new OkHttpCallback() {
                     @Override
                     public void onFinish(String dataJson) {
                         handler.post(() -> {

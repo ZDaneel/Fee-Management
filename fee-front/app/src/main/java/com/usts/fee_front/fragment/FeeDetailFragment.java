@@ -11,10 +11,19 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.usts.fee_front.R;
 import com.usts.fee_front.databinding.FragmentFeeDetailBinding;
 import com.usts.fee_front.databinding.FragmentFeeListBinding;
+import com.usts.fee_front.pojo.Fee;
+import com.usts.fee_front.utils.NetworkConstants;
+import com.usts.fee_front.utils.OkHttpCallback;
+import com.usts.fee_front.utils.OkHttpUtils;
+
+import java.util.Date;
 
 /**
  * 具体账单信息
@@ -31,7 +40,39 @@ public class FeeDetailFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentFeeDetailBinding.inflate(inflater, container, false);
+        int feeId = FeeDetailFragmentArgs.fromBundle(getArguments()).getFeeId();
+        updateData(feeId);
+        binding.btnCheck.setOnClickListener(view -> {
+            Bundle bundle = new CommentListFragmentArgs.Builder()
+                    .setFeeId(feeId)
+                    .build()
+                    .toBundle();
+            NavHostFragment.findNavController(FeeDetailFragment.this)
+                    .navigate(R.id.action_feeDetailFragment_to_commentListFragment, bundle);
+        });
         return binding.getRoot();
+    }
+
+    /**
+     * feeId查询详细信息
+     */
+    private void updateData(int feeId) {
+        OkHttpUtils.get(NetworkConstants.QUERY_FEE_URL + feeId, new OkHttpCallback() {
+            @Override
+            public void onFinish(String dataJson) throws JsonProcessingException {
+                if (dataJson != null) {
+                    Fee fee = mapper.readValue(dataJson, Fee.class);
+                    handler.post(() -> {
+                        String fname = " " + fee.getFname();
+                        String moneyString = " " + fee.getMoney();
+                        String acceptor = " " + fee.getAcceptor();
+                        binding.detailFeeName.append(fname);
+                        binding.detailFeeMoney.append(moneyString);
+                        binding.detailFeeAcceptor.append(acceptor);
+                    });
+                }
+            }
+        });
     }
 
     @Override
