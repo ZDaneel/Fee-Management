@@ -43,6 +43,9 @@
             android:name="class_id"
             app:argType="integer"
             android:defaultValue="-1" />
+        <action
+            android:id="@+id/action_feeAddFragment_to_feeListFragment"
+            app:destination="@id/feeListFragment" />
     </fragment>
 
     <fragment

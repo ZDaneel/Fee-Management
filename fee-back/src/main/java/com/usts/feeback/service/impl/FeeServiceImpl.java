@@ -2,23 +2,16 @@ package com.usts.feeback.service.impl;
 
 import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.util.BooleanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.usts.feeback.pojo.Comment;
 import com.usts.feeback.pojo.Fee;
 import com.usts.feeback.dao.FeeMapper;
-import com.usts.feeback.service.CollegeClassService;
-import com.usts.feeback.service.CommentService;
 import com.usts.feeback.service.FeeService;
 import com.usts.feeback.utils.Result;
-import com.usts.feeback.utils.StudentHolder;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 
-import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -79,11 +72,14 @@ public class FeeServiceImpl extends ServiceImpl<FeeMapper, Fee> implements FeeSe
     }
 
     @Override
-    public Integer queryFeeStatus(Integer feeId) {
+    public Result<Integer> queryFeeStatus(Integer feeId) {
+        if (feeId == -1) {
+            return Result.error("参数错误!");
+        }
         LambdaQueryWrapper<Fee> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.eq(Fee::getId, feeId).select(Fee::getClosed);
         Fee one = getOne(lambdaQueryWrapper);
-        return one.getClosed();
+        return Result.success(one.getClosed());
     }
 
     /**

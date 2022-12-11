@@ -34,5 +34,5 @@ public interface FeeService extends IService<Fee> {
      * @param feeId 支出id
      * @return 是否关闭
      */
-    Integer queryFeeStatus(Integer feeId);
+    Result<Integer> queryFeeStatus(Integer feeId);
 }

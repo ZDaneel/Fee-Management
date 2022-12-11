@@ -50,6 +50,6 @@ public class FeeController {
     @ApiOperation(value = "查询支出状态 是否关闭")
     @GetMapping("/status/{feeId}")
     public Result<Integer> queryFeeStatus(@PathVariable("feeId") Integer feeId) {
-        return Result.success(feeService.queryFeeStatus(feeId));
+        return feeService.queryFeeStatus(feeId);
     }
 }

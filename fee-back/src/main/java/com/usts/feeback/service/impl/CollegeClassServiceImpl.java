@@ -4,10 +4,8 @@ import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.usts.feeback.dao.CollegeClassMapper;
 import com.usts.feeback.dto.CollegeClassDTO;
-import com.usts.feeback.dto.StudentDTO;
 import com.usts.feeback.pojo.CollegeClass;
 import com.usts.feeback.service.CollegeClassService;
-import com.usts.feeback.utils.Result;
 import com.usts.feeback.utils.StudentHolder;
 import org.springframework.stereotype.Service;
 

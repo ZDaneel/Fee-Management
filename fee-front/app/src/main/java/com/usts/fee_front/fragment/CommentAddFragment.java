@@ -24,6 +24,7 @@ import com.usts.fee_front.utils.OkHttpUtils;
 
 /**
  * 问题添加功能
+ *
  * @author zdaneel
  */
 public class CommentAddFragment extends Fragment {
@@ -43,6 +44,7 @@ public class CommentAddFragment extends Fragment {
 
     /**
      * 确认添加
+     *
      * @param feeId 开支id
      */
     private void handleConfirmButton(Integer feeId) {
@@ -58,13 +60,19 @@ public class CommentAddFragment extends Fragment {
             comment.setContent(content);
             try {
                 String commentJson = mapper.writeValueAsString(comment);
-                OkHttpUtils.post(NetworkConstants.INSERT_COMMENT_URL, commentJson, new OkHttpCallback() {
+                OkHttpUtils.post(NetworkConstants.INSERT_PARENT_COMMENT_URL, commentJson, new OkHttpCallback() {
                     @Override
                     public void onFinish(String dataJson) {
-                        binding.addCommentTitle.setText("");
-                        binding.addCommentContent.setText("");
-                        NavHostFragment.findNavController(CommentAddFragment.this)
-                                .navigate(R.id.action_commentAddFragment_to_commentListFragment);
+                        handler.post(() -> {
+                            binding.addCommentTitle.setText("");
+                            binding.addCommentContent.setText("");
+                            Bundle bundle = new CommentListFragmentArgs.Builder()
+                                    .setFeeId(comment.getTargetId())
+                                    .build()
+                                    .toBundle();
+                            NavHostFragment.findNavController(CommentAddFragment.this)
+                                    .navigate(R.id.action_commentAddFragment_to_commentListFragment, bundle);
+                        });
                     }
                 });
             } catch (JsonProcessingException e) {

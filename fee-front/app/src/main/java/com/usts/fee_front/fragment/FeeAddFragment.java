@@ -12,10 +12,12 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.usts.fee_front.MyApplication;
+import com.usts.fee_front.R;
 import com.usts.fee_front.databinding.FragmentFeeAddBinding;
 import com.usts.fee_front.databinding.FragmentFeeListBinding;
 import com.usts.fee_front.pojo.Fee;
@@ -75,6 +77,12 @@ public class FeeAddFragment extends Fragment {
                             binding.addFeeMoney.setText("");
                             binding.addFeeAcceptor.setText("");
                             Toast.makeText(requireContext(), "添加成功!", Toast.LENGTH_SHORT).show();
+                            Bundle bundle = new FeeListFragmentArgs.Builder()
+                                    .setClassId(fee.getCollegeClassId())
+                                    .build()
+                                    .toBundle();
+                            NavHostFragment.findNavController(FeeAddFragment.this)
+                                    .navigate(R.id.action_commentAddFragment_to_commentListFragment, bundle);
                         });
                     }
                 });

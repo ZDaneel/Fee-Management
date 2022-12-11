@@ -119,7 +119,9 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
 
     @Override
     public Result<Boolean> insertParentComment(Comment comment) {
-        //save(comment); TODO
+        Integer studentId = StudentHolder.getStudent().getId();
+        comment.setStudentId(studentId);
+        save(comment);
         Integer commentId = comment.getId();
         if (commentId == null) {
             return Result.error("插入失败");
