@@ -1,12 +1,11 @@
 package com.usts.feeback.controller;
 
 import cn.hutool.core.io.FileUtil;
+import com.usts.feeback.utils.Result;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.util.ResourceUtils;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -35,12 +34,18 @@ public class FileController {
          * 重命名并上传文件到根目录
          */
         String originalFilename = file.getOriginalFilename();
-        System.out.println("originalFilename" + originalFilename);
         String type = FileUtil.extName(originalFilename);
         String uuid = UUID.randomUUID().toString().replace("-", "");
         String fileName = uuid + "." + type;
-        String path = System.getProperty("user.dir") + fileUploadPath + "/" + fileName;
+        String path = fileUploadPath + fileName;
+        System.out.println(path);
         file.transferTo(FileUtil.touch(path));
         return fileName;
+    }
+
+    @GetMapping("/login-image")
+    public Result<String> queryLoginImage() {
+        String fileName = "bb39991acccf4937823b0e344683cdbe.JPG";
+        return Result.success(fileName);
     }
 }

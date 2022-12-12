@@ -12,6 +12,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.annotation.GlideModule;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -65,6 +67,21 @@ public class LoginActivity extends AppCompatActivity {
                 Log.e(TAG, "发送后的回调" + msg);
             });
             //test(view);
+        });
+
+        setImage();
+    }
+
+    private void setImage() {
+        OkHttpUtils.get(NetworkConstants.QUERY_LOGIN_IMAGE_URL, new OkHttpCallback() {
+            @Override
+            public void onFinish(String dataJson) throws JsonProcessingException {
+                Log.e(TAG, "dataJson: " + dataJson);
+                String fileName = mapper.readValue(dataJson, String.class);
+                String imageUrl = NetworkConstants.GET_IMAGE_URL + fileName;
+                handler.post(() ->
+                        Glide.with(LoginActivity.this).load(imageUrl).into(binding.loginImage));
+            }
         });
     }
 

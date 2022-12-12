@@ -39,4 +39,4 @@ mybatis-plus:
 
 file:
   upload:
-    path: /images/
+    path: /Users/zdaneel/Desktop/学习/大学学习/Fee-Management/fee-back/src/main/resources/images/

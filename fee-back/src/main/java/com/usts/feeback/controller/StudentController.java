@@ -10,6 +10,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -51,10 +52,7 @@ public class StudentController {
         return studentService.login(student, request);
     }
 
-    /**
-     * 在拦截器中取出查询的用户，直接返回DTO数据
-     * @return Result封装的StudentDTO数据
-     */
+
     @ApiOperation(value = "查询当前用户权限信息", hidden = true)
     @GetMapping("/role/{classId}")
     public Result<Integer> queryRole(@PathVariable("classId")Integer classId) {
