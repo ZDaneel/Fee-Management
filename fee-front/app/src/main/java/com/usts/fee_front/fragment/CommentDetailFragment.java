@@ -13,6 +13,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -62,6 +63,7 @@ public class CommentDetailFragment extends Fragment {
         int commentId = CommentDetailFragmentArgs.fromBundle(getArguments()).getCommentId();
         classId = CommentDetailFragmentArgs.fromBundle(getArguments()).getClassId();
         commentRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        commentRecyclerView.addItemDecoration(new DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL));
         updateData(commentId);
         handleConfirmButton();
         handleParentCommentClick();
