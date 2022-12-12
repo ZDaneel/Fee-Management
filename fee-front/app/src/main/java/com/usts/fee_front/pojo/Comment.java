@@ -2,7 +2,9 @@ package com.usts.fee_front.pojo;
 
 import androidx.annotation.NonNull;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -71,6 +73,11 @@ public class Comment {
      * 是否关闭 0-开启 1-关闭
      */
     private Integer closed;
+
+    /**
+     * 子回复列表
+     */
+    private List<Comment> replyList = new ArrayList<>();
 
     public Integer getId() {
         return id;
@@ -168,6 +175,14 @@ public class Comment {
         this.closed = closed;
     }
 
+    public List<Comment> getReplyList() {
+        return replyList;
+    }
+
+    public void setReplyList(List<Comment> replyList) {
+        this.replyList = replyList;
+    }
+
     @NonNull
     @Override
     public String toString() {
@@ -184,6 +199,7 @@ public class Comment {
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
                 ", closed=" + closed +
+                ", replyList=" + replyList +
                 '}';
     }
 }

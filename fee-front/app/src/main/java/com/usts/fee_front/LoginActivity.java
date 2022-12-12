@@ -17,6 +17,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.usts.fee_front.databinding.ActivityLoginBinding;
 import com.usts.fee_front.pojo.Student;
+import com.usts.fee_front.utils.InputTextMsgDialog;
 import com.usts.fee_front.utils.NetworkConstants;
 import com.usts.fee_front.utils.OkHttpCallback;
 import com.usts.fee_front.utils.OkHttpUtils;
@@ -58,7 +59,12 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         binding.test.setOnClickListener(view1 -> {
-            test(view);
+            InputTextMsgDialog inputTextMsgDialog = new InputTextMsgDialog(LoginActivity.this, R.style.dialog_center);
+            inputTextMsgDialog.show();
+            inputTextMsgDialog.setmOnTextSendListener(msg -> {
+                Log.e(TAG, "发送后的回调" + msg);
+            });
+            //test(view);
         });
     }
 
