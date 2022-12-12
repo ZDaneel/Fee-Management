@@ -36,3 +36,7 @@ mybatis-plus:
     db-config:
       id-type: auto
       logic-delete-field: deleted
+
+file:
+  upload:
+    path: /images/
