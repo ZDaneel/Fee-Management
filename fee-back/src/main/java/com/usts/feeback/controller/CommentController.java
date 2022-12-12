@@ -28,6 +28,12 @@ public class CommentController {
         return Result.success(commentService.queryOpenParentComments(feeId));
     }
 
+    @ApiOperation(value = "查询开支id所对应的已关闭评论列表")
+    @GetMapping("/closed-comments/{feeId}")
+    public Result<List<Fee>> queryClosedFees(@PathVariable("feeId") Integer feeId) {
+        return Result.success();
+    }
+
     @ApiOperation(value = "新增父级评论")
     @PostMapping("/parent-comment")
     public Result<Boolean> insertParentComment(@RequestBody Comment comment) {
