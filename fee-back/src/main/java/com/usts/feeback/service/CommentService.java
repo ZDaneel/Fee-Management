@@ -22,6 +22,12 @@ public interface CommentService extends IService<Comment> {
     List<Comment> queryOpenParentComments(Integer feeId);
 
     /**
+     * 开启异步任务关闭任务
+     * @param closedCommentList 需要关闭的评论列表
+     */
+    void handleCommentListClose(List<Comment> closedCommentList);
+
+    /**
      * 新增父级评论
      * @param comment 评论
      * @return 是否成功

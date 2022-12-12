@@ -4,14 +4,18 @@ import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.usts.feeback.pojo.Comment;
 import com.usts.feeback.pojo.Fee;
 import com.usts.feeback.dao.FeeMapper;
+import com.usts.feeback.service.CommentService;
 import com.usts.feeback.service.FeeService;
 import com.usts.feeback.utils.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
+import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,7 +31,11 @@ import static com.usts.feeback.utils.Constants.FEE_TTL;
 @Service
 @Slf4j
 public class FeeServiceImpl extends ServiceImpl<FeeMapper, Fee> implements FeeService {
+
+    @Resource
+    private CommentService commentService;
     @Override
+    @Transactional(rollbackFor = RuntimeException.class)
     public List<Fee> queryOpenFees(Integer classId) {
         /*
          * 根据班级id和未关闭查询
@@ -53,6 +61,13 @@ public class FeeServiceImpl extends ServiceImpl<FeeMapper, Fee> implements FeeSe
         for (Fee fee : timeoutFeeList) {
             fee.setClosed(1);
             updateById(fee);
+            /*
+             * 异步关闭该fee下面所有的评论
+             */
+            LambdaQueryWrapper<Comment> commentLambdaQueryWrapper = new LambdaQueryWrapper<>();
+            commentLambdaQueryWrapper.eq(Comment::getTargetId, fee.getId());
+            List<Comment> commentList = commentService.list(commentLambdaQueryWrapper);
+            commentService.handleCommentListClose(commentList);
         }
         return openFeeList;
     }

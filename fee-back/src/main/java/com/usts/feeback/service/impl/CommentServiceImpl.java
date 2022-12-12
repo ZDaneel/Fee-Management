@@ -2,7 +2,6 @@ package com.usts.feeback.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.usts.feeback.dao.CommentMapper;
 import com.usts.feeback.pojo.Comment;
 import com.usts.feeback.pojo.Fee;
@@ -15,6 +14,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -23,7 +23,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 import static com.usts.feeback.utils.Constants.CLOSED;
 import static com.usts.feeback.utils.Constants.COMMENT_KEY;
@@ -79,7 +78,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
     }
 
     /**
-     * 异步任务
+     * 关闭评论
      *
      * @param comment 要关闭的评论
      */
@@ -95,29 +94,19 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         /*
          * 查询未关闭的父级评论
          */
-        List<Comment> commentList = commentMapper.queryOpenParentComments(feeId);
-        commentList.forEach(System.out::println);
-        System.out.println("=============下面为可以关闭的评论==============");
-        /*
-         * 过滤出可以关闭的评论列表
-         */
-        List<Comment> closedCommentList = commentList.stream()
-                .filter(this::judgeClosed)
-                .collect(Collectors.toList());
-        closedCommentList.forEach(System.out::println);
-        System.out.println("=============下面为开放的评论==============");
-        List<Comment> openCommentList = commentList.stream()
-                .filter(comment -> !closedCommentList.contains(comment))
-                .collect(Collectors.toList());
-        openCommentList.forEach(System.out::println);
-        /*
-         * 开启异步任务
-         */
+        return commentMapper.queryOpenParentComments(feeId);
+    }
+
+
+    @Override
+    @Transactional(rollbackFor = RuntimeException.class)
+    public void handleCommentListClose(List<Comment> closedCommentList) {
         for (Comment comment : closedCommentList) {
-            CommentCloseHandler commentCloseHandler = new CommentCloseHandler(comment);
-            COMMENT_CLOSE_EXECUTOR.submit(commentCloseHandler);
+            if (CLOSED != comment.getClosed()) {
+                CommentCloseHandler commentCloseHandler = new CommentCloseHandler(comment);
+                COMMENT_CLOSE_EXECUTOR.submit(commentCloseHandler);
+            }
         }
-        return openCommentList;
     }
 
     @Override

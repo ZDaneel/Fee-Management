@@ -19,8 +19,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/comment")
 public class CommentController {
-    // TODO 新增评论时判断是否已经确认
-
     @Resource
     private CommentService commentService;
 
