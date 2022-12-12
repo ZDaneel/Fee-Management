@@ -60,6 +60,10 @@
             android:name="fee_id"
             app:argType="integer"
             android:defaultValue="-1" />
+        <argument
+            android:name="class_id"
+            app:argType="integer"
+            android:defaultValue="-1" />
     </fragment>
 
     <fragment
@@ -69,6 +73,10 @@
         tools:layout="@layout/fragment_comment_detail">
         <argument
             android:name="comment_id"
+            app:argType="integer"
+            android:defaultValue="-1" />
+        <argument
+            android:name="class_id"
             app:argType="integer"
             android:defaultValue="-1" />
     </fragment>
@@ -100,6 +108,10 @@
             app:destination="@id/commentAddFragment" />
         <argument
             android:name="fee_id"
+            app:argType="integer"
+            android:defaultValue="-1" />
+        <argument
+            android:name="class_id"
             app:argType="integer"
             android:defaultValue="-1" />
 

@@ -55,8 +55,8 @@ public class FeeListFragment extends Fragment {
         feeRecyclerView = binding.feeList;
         feeRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         int classId = FeeListFragmentArgs.fromBundle(getArguments()).getClassId();
-        updateData(classId);
         handleAddButton(classId);
+        updateData(classId);
         return binding.getRoot();
     }
 
@@ -72,11 +72,9 @@ public class FeeListFragment extends Fragment {
             @Override
             public void onFinish(String dataJson) throws JsonProcessingException {
                 Integer role = mapper.readValue(dataJson, Integer.class);
-                handler.post(() -> {
-                    if (CommonConstants.BOOKKEEPER != role) {
-                        btnFeeAdd.setVisibility(View.INVISIBLE);
-                    }
-                });
+                if (CommonConstants.BOOKKEEPER == role) {
+                    handler.post(() -> btnFeeAdd.setEnabled(true));
+                }
             }
         });
 
@@ -109,6 +107,7 @@ public class FeeListFragment extends Fragment {
                     FeeAdapter.CallBack callBack = fee -> {
                         Bundle bundle = new FeeDetailFragmentArgs.Builder()
                                 .setFeeId(fee.getId())
+                                .setClassId(classId)
                                 .build()
                                 .toBundle();
                         NavHostFragment.findNavController(FeeListFragment.this)

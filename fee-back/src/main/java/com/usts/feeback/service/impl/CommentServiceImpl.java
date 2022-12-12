@@ -200,15 +200,6 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         return Result.success();
     }
 
-    @Override
-    public Result<Boolean> cancelComment(Integer commentId) {
-        // 往Redis对应的key中移除当前用户的id
-        Integer studentId = StudentHolder.getStudent().getId();
-        String key = COMMENT_KEY + commentId;
-        stringRedisTemplate.opsForSet().remove(key, studentId.toString());
-        return Result.success();
-    }
-
     @SneakyThrows
     @Override
     public Comment queryParentComment(Integer commentId) {
@@ -216,10 +207,14 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
          * 1. 查询commentId的评论
          * 2. 查询pid为commentId的评论
          * 3. 将子评论列表放入父评论的replyList中
+         * 4. 将已经确认的ids放入confirmList
          */
         Comment parentComment = commentMapper.queryParentCommentByCommentId(commentId);
         List<Comment> childCommentList = commentMapper.queryChildCommentsByParentCommentId(commentId);
         parentComment.setReplyList(childCommentList);
+        String key = COMMENT_KEY + commentId;
+        Set<String> members = stringRedisTemplate.opsForSet().members(key);
+        parentComment.setConfirmIds(members);
         return parentComment;
     }
 

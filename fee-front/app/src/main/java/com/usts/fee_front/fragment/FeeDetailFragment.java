@@ -28,7 +28,7 @@ import java.util.Date;
 
 /**
  * 具体账单信息
- * 可以点击按钮查看质疑与确认
+ * 可以点击按钮查看质疑
  * @author zdaneel
  */
 public class FeeDetailFragment extends Fragment {
@@ -42,15 +42,17 @@ public class FeeDetailFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentFeeDetailBinding.inflate(inflater, container, false);
         int feeId = FeeDetailFragmentArgs.fromBundle(getArguments()).getFeeId();
+        int classId = FeeListFragmentArgs.fromBundle(getArguments()).getClassId();
         updateData(feeId);
-        checkButtonHandler(feeId);
+        checkButtonHandler(feeId, classId);
         return binding.getRoot();
     }
 
-    private void checkButtonHandler(int feeId) {
+    private void checkButtonHandler(int feeId, int classId) {
         binding.btnCheck.setOnClickListener(view -> {
             Bundle bundle = new CommentListFragmentArgs.Builder()
                     .setFeeId(feeId)
+                    .setClassId(classId)
                     .build()
                     .toBundle();
             NavHostFragment.findNavController(FeeDetailFragment.this)

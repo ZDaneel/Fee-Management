@@ -1,18 +1,17 @@
 package com.usts.feeback.pojo;
 
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.*;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import io.swagger.models.auth.In;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * (Comment)表实体类
@@ -93,6 +92,12 @@ public class Comment implements Serializable {
      */
     @TableField(exist = false)
     private List<Comment> replyList = new ArrayList<>();
+
+    /**
+     * 已确认的学生ids
+     */
+    @TableField(exist = false)
+    private Set<String> confirmIds = new HashSet<>();
 
     private static final long serialVersionUID = 1L;
 

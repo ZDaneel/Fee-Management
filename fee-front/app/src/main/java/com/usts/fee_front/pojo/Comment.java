@@ -4,7 +4,9 @@ import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -78,6 +80,11 @@ public class Comment {
      * 子回复列表
      */
     private List<Comment> replyList = new ArrayList<>();
+
+    /**
+     * 已确认的学生ids
+     */
+    private Set<String> confirmIds = new HashSet<>();
 
     public Integer getId() {
         return id;
@@ -183,6 +190,14 @@ public class Comment {
         this.replyList = replyList;
     }
 
+    public Set<String> getConfirmIds() {
+        return confirmIds;
+    }
+
+    public void setConfirmIds(Set<String> confirmIds) {
+        this.confirmIds = confirmIds;
+    }
+
     @NonNull
     @Override
     public String toString() {
@@ -200,6 +215,7 @@ public class Comment {
                 ", updateTime=" + updateTime +
                 ", closed=" + closed +
                 ", replyList=" + replyList +
+                ", confirmIds=" + confirmIds +
                 '}';
     }
 }

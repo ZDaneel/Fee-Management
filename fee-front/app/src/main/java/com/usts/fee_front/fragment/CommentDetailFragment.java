@@ -31,7 +31,9 @@ import com.usts.fee_front.utils.OkHttpCallback;
 import com.usts.fee_front.utils.OkHttpUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 问题具体功能
@@ -42,6 +44,7 @@ import java.util.List;
 public class CommentDetailFragment extends Fragment {
     public static final String TAG = "CommentDetailFragment";
     public static final String CLOSE_MESSAGE = "该主题已关闭";
+    public static final String ROLE_MESSAGE = "没有权限回复";
     private FragmentCommentDetailBinding binding;
     private final ObjectMapper mapper = new ObjectMapper();
     private final Handler handler = new Handler(Looper.getMainLooper());
@@ -49,13 +52,15 @@ public class CommentDetailFragment extends Fragment {
     private ReplyAdapter replyAdapter;
     private RecyclerView commentRecyclerView;
     private Comment parentComment;
+    private Integer classId;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentCommentDetailBinding.inflate(inflater, container, false);
         commentRecyclerView = binding.commentDetailList;
-        Integer commentId = CommentDetailFragmentArgs.fromBundle(getArguments()).getCommentId();
+        int commentId = CommentDetailFragmentArgs.fromBundle(getArguments()).getCommentId();
+        classId = CommentDetailFragmentArgs.fromBundle(getArguments()).getClassId();
         commentRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         updateData(commentId);
         handleConfirmButton();
@@ -89,10 +94,29 @@ public class CommentDetailFragment extends Fragment {
             if (CommonConstants.CLOSED == parentComment.getClosed()) {
                 Toast.makeText(MyApplication.getContext(), CLOSE_MESSAGE, Toast.LENGTH_SHORT).show();
             } else {
-                insertChildComment(parentComment);
+                judgeRole(parentComment);
             }
         });
+    }
 
+    /**
+     * 判断权限
+     *
+     * @param comment 当前评论
+     */
+    private void judgeRole(Comment comment) {
+        OkHttpUtils.get(NetworkConstants.QUERY_ROLE_URL + classId, new OkHttpCallback() {
+            @Override
+            public void onFinish(String dataJson) throws JsonProcessingException {
+                Integer role = mapper.readValue(dataJson, Integer.class);
+                List<Integer> roleList = Arrays.asList(CommonConstants.BOOKKEEPER, CommonConstants.CLASS_COMMITTEE);
+                if (roleList.contains(role)) {
+                    handler.post(() -> insertChildComment(comment));
+                } else {
+                    handler.post(() -> Toast.makeText(MyApplication.getContext(), ROLE_MESSAGE, Toast.LENGTH_SHORT).show());
+                }
+            }
+        });
     }
 
     private void updateData(Integer commentId) {
@@ -101,27 +125,29 @@ public class CommentDetailFragment extends Fragment {
             public void onFinish(String dataJson) throws JsonProcessingException {
                 parentComment = mapper.readValue(dataJson, Comment.class);
                 List<Comment> childCommentList = parentComment.getReplyList();
-                if (CommonConstants.CLOSED == parentComment.getClosed()) {
-                    binding.btnConfirm.setEnabled(false);
-                    binding.btnConfirm.setText("已确认");
-                } else {
-                    handler.post(() -> {
-                        String author = parentComment.getStudentName() + ": ";
-                        binding.parentCommentTitle.setText(parentComment.getTitle());
-                        binding.parentCommentContent.setText(parentComment.getContent());
-                        binding.parentCommentStudent.setText(author);
-                        replyAdapter = new ReplyAdapter(childCommentList);
-                        ReplyAdapter.CallBack callBack = clickedComment -> {
-                            if (CommonConstants.CLOSED == parentComment.getClosed()) {
-                                Toast.makeText(MyApplication.getContext(), CLOSE_MESSAGE, Toast.LENGTH_SHORT).show();
-                            } else {
-                                insertChildComment(clickedComment);
-                            }
-                        };
-                        replyAdapter.setCallBack(callBack);
-                        commentRecyclerView.setAdapter(replyAdapter);
-                    });
-                }
+                Set<String> confirmIds = parentComment.getConfirmIds();
+                Integer studentId = MyApplication.getStudent().getId();
+                handler.post(() -> {
+                    if (confirmIds.contains(studentId.toString())) {
+                        binding.btnConfirm.setEnabled(false);
+                        binding.btnConfirm.setText("已确认");
+                    }
+                    String author = parentComment.getStudentName() + ": ";
+                    binding.parentCommentTitle.setText(parentComment.getTitle());
+                    binding.parentCommentContent.setText(parentComment.getContent());
+                    binding.parentCommentStudent.setText(author);
+                    replyAdapter = new ReplyAdapter(childCommentList);
+                    ReplyAdapter.CallBack callBack = clickedComment -> {
+                        if (CommonConstants.CLOSED == parentComment.getClosed()) {
+                            Toast.makeText(MyApplication.getContext(), CLOSE_MESSAGE, Toast.LENGTH_SHORT).show();
+                        } else {
+                            judgeRole(clickedComment);
+                        }
+                    };
+                    replyAdapter.setCallBack(callBack);
+                    commentRecyclerView.setAdapter(replyAdapter);
+                });
+
             }
         });
     }

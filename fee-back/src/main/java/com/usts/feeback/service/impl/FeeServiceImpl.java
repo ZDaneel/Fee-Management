@@ -11,6 +11,7 @@ import com.usts.feeback.service.CommentService;
 import com.usts.feeback.service.FeeService;
 import com.usts.feeback.utils.Result;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,6 +34,7 @@ import static com.usts.feeback.utils.Constants.FEE_TTL;
 public class FeeServiceImpl extends ServiceImpl<FeeMapper, Fee> implements FeeService {
 
     @Resource
+    @Lazy
     private CommentService commentService;
     @Override
     @Transactional(rollbackFor = RuntimeException.class)

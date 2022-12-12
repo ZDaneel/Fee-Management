@@ -41,7 +41,6 @@ public class CommentListFragment extends Fragment {
     private FragmentCommentListBinding binding;
     private final ObjectMapper mapper = new ObjectMapper();
     private final Handler handler = new Handler(Looper.getMainLooper());
-
     private CommentAdapter commentAdapter;
     private RecyclerView commentRecyclerView;
 
@@ -52,7 +51,8 @@ public class CommentListFragment extends Fragment {
         commentRecyclerView = binding.commentList;
         commentRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         int feeId = CommentListFragmentArgs.fromBundle(getArguments()).getFeeId();
-        updateData(feeId);
+        int classId = CommentListFragmentArgs.fromBundle(getArguments()).getClassId();
+        updateData(feeId, classId);
         handleAddButton(feeId);
         return binding.getRoot();
     }
@@ -92,7 +92,7 @@ public class CommentListFragment extends Fragment {
     /**
      * feeId查询对应的评论信息
      */
-    private void updateData(int feeId) {
+    private void updateData(int feeId, int classId) {
         OkHttpUtils.get(NetworkConstants.QUERY_OPEN_COMMENTS_URL + feeId, new OkHttpCallback() {
             @Override
             public void onFinish(String dataJson) throws JsonProcessingException {
@@ -108,6 +108,7 @@ public class CommentListFragment extends Fragment {
                     CommentAdapter.CallBack callBack = comment -> {
                         Bundle bundle = new CommentDetailFragmentArgs.Builder()
                                 .setCommentId(comment.getId())
+                                .setClassId(classId)
                                 .build()
                                 .toBundle();
                         NavHostFragment.findNavController(CommentListFragment.this)
