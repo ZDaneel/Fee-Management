@@ -45,7 +45,7 @@
     <string name="fee_add">添加账单</string>
     <string name="fee_add_clear">清空</string>
     <string name="comment_title">标题:</string>
-    <string name="reply_title">内容:</string>
+    <string name="reply_content">内容:</string>
     <string name="comment_student">评论者:</string>
     <string name="navigation_fee_open">已激活</string>
     <string name="navigation_fee_close">已关闭</string>

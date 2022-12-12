@@ -33,6 +33,7 @@ import java.util.List;
 
 /**
  * 当前fee对应的问题列表
+ *
  * @author zdaneel
  */
 public class CommentListFragment extends Fragment {
@@ -59,6 +60,7 @@ public class CommentListFragment extends Fragment {
     /**
      * 处理添加按钮
      * 如果开支已经关闭，不显示添加按钮
+     *
      * @param feeId 开支id
      */
     private void handleAddButton(int feeId) {
@@ -69,18 +71,18 @@ public class CommentListFragment extends Fragment {
                 if (dataJson != null) {
                     Integer isClosed = mapper.readValue(dataJson, Integer.class);
                     handler.post(() -> {
-                       if (CommonConstants.CLOSED == isClosed) {
-                           btnFeeAdd.setVisibility(View.INVISIBLE);
-                       }
+                        if (CommonConstants.CLOSED == isClosed) {
+                            btnFeeAdd.setVisibility(View.INVISIBLE);
+                        }
                     });
                 }
             }
         });
         btnFeeAdd.setOnClickListener(view -> {
-             Bundle bundle = new CommentAddFragmentArgs.Builder()
-                     .setFeeId(feeId)
-                     .build()
-                     .toBundle();
+            Bundle bundle = new CommentAddFragmentArgs.Builder()
+                    .setFeeId(feeId)
+                    .build()
+                    .toBundle();
             NavHostFragment.findNavController(CommentListFragment.this)
                     .navigate(R.id.action_commentListFragment_to_commentAddFragment, bundle);
 
@@ -104,7 +106,12 @@ public class CommentListFragment extends Fragment {
                 handler.post(() -> {
                     commentAdapter = new CommentAdapter(commentList);
                     CommentAdapter.CallBack callBack = comment -> {
-                      // TODO 导航
+                        Bundle bundle = new CommentDetailFragmentArgs.Builder()
+                                .setCommentId(comment.getId())
+                                .build()
+                                .toBundle();
+                        NavHostFragment.findNavController(CommentListFragment.this)
+                                .navigate(R.id.action_commentListFragment_to_commentDetailFragment, bundle);
                     };
                     commentAdapter.setCallBack(callBack);
                     commentRecyclerView.setAdapter(commentAdapter);

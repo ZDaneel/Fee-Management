@@ -41,5 +41,19 @@ public interface CommentService extends IService<Comment> {
      * @return 结果
      */
     Result<Boolean> cancelComment(Integer commentId);
+
+    /**
+     * 通过评论id查询该id对应的信息和对应回复的信息
+     * @param commentId 评论id
+     * @return 评论信息
+     */
+    Comment queryParentComment(Integer commentId);
+
+    /**
+     * 新增子级评论
+      * @param comment 新增的评论信息
+     * @return 结果
+     */
+    Result<Boolean> insertChildComment(Comment comment);
 }
 

@@ -1,5 +1,6 @@
 package com.usts.feeback.pojo;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import com.baomidou.mybatisplus.annotation.IdType;
@@ -11,6 +12,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * (Comment)表实体类
@@ -85,6 +87,12 @@ public class Comment implements Serializable {
      * 是否关闭 0-开启 1-关闭
      */
     private Integer closed;
+
+    /**
+     * 子回复列表
+     */
+    @TableField(exist = false)
+    private List<Comment> replyList = new ArrayList<>();
 
     private static final long serialVersionUID = 1L;
 

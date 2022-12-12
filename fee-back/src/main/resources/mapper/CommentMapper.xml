@@ -10,13 +10,61 @@
         <result property="targetId" column="target_id"/>
     </resultMap>
 
+    <resultMap id="CommentResult" type="com.usts.feeback.pojo.Comment">
+        <result property="id" column="id"/>
+        <result property="targetId" column="target_id"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="studentId" column="student_id"/>
+        <result property="studentName" column="student_name"/>
+        <result property="toStudentId" column="to_student_id"/>
+        <result property="toStudentName" column="to_student_name"/>
+        <result property="closed" column="closed"/>
+    </resultMap>
+
     <select id="queryOpenParentComments" resultMap="BriefCommentResult">
-        select comment.id as id, title, sname, student_id, target_id
+        select comment.id as id,
+               title,
+               sname,
+               student_id,
+               target_id
         from comment
                  left join college_student on student_id = college_student.id
         where target_id = #{feeId}
           and pid = 0
           and closed = 0
+    </select>
+
+    <select id="queryParentCommentByCommentId" resultMap="CommentResult">
+        select comment.id as id,
+               target_id,
+               title,
+               content,
+               student_id,
+               college_student.sname as student_name,
+               to_student_id,
+               to_college_student.sname as to_student_name,
+               closed
+        from comment
+                 left join college_student on student_id = college_student.id
+                 left join college_student as to_college_student on to_student_id = to_college_student.id
+        where comment.id = #{commentId}
+    </select>
+
+    <select id="queryChildCommentsByParentCommentId" resultMap="CommentResult">
+        select comment.id as id,
+               target_id,
+               title,
+               content,
+               student_id,
+               college_student.sname as student_name,
+               to_student_id,
+               to_college_student.sname as to_student_name,
+               closed
+        from comment
+                 left join college_student on student_id = college_student.id
+                 left join college_student as to_college_student on to_student_id = to_college_student.id
+        where pid = #{parentId}
     </select>
 </mapper>
 

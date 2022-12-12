@@ -4,6 +4,7 @@ package com.usts.fee_front.fragment;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,6 +43,11 @@ public class FeeDetailFragment extends Fragment {
         binding = FragmentFeeDetailBinding.inflate(inflater, container, false);
         int feeId = FeeDetailFragmentArgs.fromBundle(getArguments()).getFeeId();
         updateData(feeId);
+        checkButtonHandler(feeId);
+        return binding.getRoot();
+    }
+
+    private void checkButtonHandler(int feeId) {
         binding.btnCheck.setOnClickListener(view -> {
             Bundle bundle = new CommentListFragmentArgs.Builder()
                     .setFeeId(feeId)
@@ -50,7 +56,6 @@ public class FeeDetailFragment extends Fragment {
             NavHostFragment.findNavController(FeeDetailFragment.this)
                     .navigate(R.id.action_feeDetailFragment_to_commentListFragment, bundle);
         });
-        return binding.getRoot();
     }
 
     /**

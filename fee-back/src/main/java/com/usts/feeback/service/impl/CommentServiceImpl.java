@@ -2,6 +2,7 @@ package com.usts.feeback.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.usts.feeback.dao.CommentMapper;
 import com.usts.feeback.pojo.Comment;
 import com.usts.feeback.pojo.Fee;
@@ -10,6 +11,8 @@ import com.usts.feeback.service.CommentService;
 import com.usts.feeback.service.FeeService;
 import com.usts.feeback.utils.Result;
 import com.usts.feeback.utils.StudentHolder;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +35,7 @@ import static com.usts.feeback.utils.Constants.COMMENT_KEY;
  * @since 2022-12-10 20:20:27
  */
 @Service
+@Slf4j
 public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> implements CommentService {
     @Resource
     private StringRedisTemplate stringRedisTemplate;
@@ -70,7 +74,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         }
         @Override
         public void run() {
-            commentCloseAsyn(comment);
+            commentClose(comment);
         }
     }
 
@@ -79,8 +83,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
      *
      * @param comment 要关闭的评论
      */
-    private void commentCloseAsyn(Comment comment) {
-        System.out.println("=============开始执行异步任务=============");
+    private void commentClose(Comment comment) {
         comment.setClosed(1);
         updateById(comment);
         String key =  COMMENT_KEY + comment.getId();
@@ -191,10 +194,20 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
 
     @Override
     public Result<Boolean> confirmComment(Integer commentId) {
-        // 往Redis对应的key中加入当前用户的id
+        /*
+         * 往Redis对应的key中加入当前用户的id
+         */
         Integer studentId = StudentHolder.getStudent().getId();
         String key = COMMENT_KEY + commentId;
         stringRedisTemplate.opsForSet().add(key, studentId.toString());
+
+        /*
+         * 判断是否可以关闭，如果可以，直接关闭
+         */
+        Comment comment = getById(commentId);
+        if (judgeClosed(comment)) {
+            commentClose(comment);
+        }
         return Result.success();
     }
 
@@ -204,6 +217,42 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         Integer studentId = StudentHolder.getStudent().getId();
         String key = COMMENT_KEY + commentId;
         stringRedisTemplate.opsForSet().remove(key, studentId.toString());
+        return Result.success();
+    }
+
+    @SneakyThrows
+    @Override
+    public Comment queryParentComment(Integer commentId) {
+        /*
+         * 1. 查询commentId的评论
+         * 2. 查询pid为commentId的评论
+         * 3. 将子评论列表放入父评论的replyList中
+         */
+        Comment parentComment = commentMapper.queryParentCommentByCommentId(commentId);
+        List<Comment> childCommentList = commentMapper.queryChildCommentsByParentCommentId(commentId);
+        parentComment.setReplyList(childCommentList);
+        return parentComment;
+    }
+
+    @Override
+    public Result<Boolean> insertChildComment(Comment comment) {
+        /*
+         * 首先判断该comment是否被异步关闭
+         */
+        Comment parentComment = getById(comment.getPid());
+        if (parentComment == null) {
+            return Result.error("不存在父级评论!");
+        }
+        if (CLOSED == parentComment.getClosed()) {
+            return Result.error("该问题已经被关闭!");
+        }
+        Integer studentId = StudentHolder.getStudent().getId();
+        comment.setStudentId(studentId);
+        save(comment);
+        Integer commentId = comment.getId();
+        if (commentId == null) {
+            return Result.error("插入失败!");
+        }
         return Result.success();
     }
 }

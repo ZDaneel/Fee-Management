@@ -24,7 +24,7 @@ public class CommentController {
     @Resource
     private CommentService commentService;
 
-    @ApiOperation(value = "开支id所对应的未关闭评论列表")
+    @ApiOperation(value = "查询开支id所对应的未关闭评论列表")
     @GetMapping("/open-comments/{feeId}")
     public Result<List<Comment>> queryOpenComments(@PathVariable("feeId") Integer feeId) {
         return Result.success(commentService.queryOpenParentComments(feeId));
@@ -34,6 +34,24 @@ public class CommentController {
     @PostMapping("/parent-comment")
     public Result<Boolean> insertParentComment(@RequestBody Comment comment) {
         return commentService.insertParentComment(comment);
+    }
+
+    @ApiOperation(value = "查询评论id所对应的评论和回复")
+    @GetMapping("/parent-comment/{commentId}")
+    public Result<Comment> queryParentComment(@PathVariable("commentId") Integer commentId) {
+        return Result.success(commentService.queryParentComment(commentId));
+    }
+
+    @ApiOperation(value = "新增子级评论(回复)")
+    @PostMapping("/child-comment")
+    public Result<Boolean> insertChildComment(@RequestBody Comment comment) {
+        return commentService.insertChildComment(comment);
+    }
+
+    @ApiOperation(value = "确认该条质疑")
+    @GetMapping("/confirm/{commentId}")
+    public Result<Boolean> confirmComment(@PathVariable("commentId") Integer commentId) {
+        return commentService.confirmComment(commentId);
     }
 
 }

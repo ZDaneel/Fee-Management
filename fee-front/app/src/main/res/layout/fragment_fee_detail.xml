@@ -8,7 +8,7 @@
     <TextView
         android:id="@+id/detail_fee_title"
         android:layout_width="162dp"
-        android:layout_height="53dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
         android:ems="10"
         android:importantForAutofill="no"
@@ -22,7 +22,7 @@
     <TextView
         android:id="@+id/detail_fee_money"
         android:layout_width="153dp"
-        android:layout_height="26dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="172dp"
         android:ems="10"
         android:importantForAutofill="no"
@@ -36,8 +36,8 @@
     <TextView
         android:id="@+id/detail_fee_acceptor"
         android:layout_width="158dp"
-        android:layout_height="26dp"
-        android:layout_marginTop="232dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="240dp"
         android:ems="10"
         android:importantForAutofill="no"
         android:text="@string/add_fee_acceptor"
@@ -50,7 +50,7 @@
     <TextView
         android:id="@+id/detail_fee_name"
         android:layout_width="156dp"
-        android:layout_height="28dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="108dp"
         android:ems="10"
         android:importantForAutofill="no"

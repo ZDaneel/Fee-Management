@@ -86,4 +86,9 @@ public class ServiceTest {
     void testQueryOpenParentComments() {
         commentService.queryOpenParentComments(1);
     }
+
+    @Test
+    void testQueryCommentByCommentId() {
+        commentService.queryParentComment(1);
+    }
 }

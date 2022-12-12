@@ -66,7 +66,12 @@
         android:id="@+id/commentDetailFragment"
         android:name="com.usts.fee_front.fragment.CommentDetailFragment"
         android:label="CommentDetailFragment"
-        tools:layout="@layout/fragment_comment_detail"/>
+        tools:layout="@layout/fragment_comment_detail">
+        <argument
+            android:name="comment_id"
+            app:argType="integer"
+            android:defaultValue="-1" />
+    </fragment>
 
     <fragment
         android:id="@+id/commentAddFragment"

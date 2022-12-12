@@ -4,9 +4,10 @@ package com.usts.fee_front.utils;
  * @author zdaneel
  */
 public class NetworkConstants {
-    private static final String HOST = "10.0.2.2";
+    private static final String VIRTUAL_HOST = "10.0.2.2";
+    public static final String REAL_HOST = "192.168.2.158";
     private static final String PORT = "8096";
-    public static final String BASE_URL = "http://"+ HOST +":"+PORT;
+    public static final String BASE_URL = "http://"+ REAL_HOST +":"+PORT;
     public static final String STUDENT = "/student";
     public static final String COLLEGE_CLASS = "/college-class";
     public static final String FEE = "/fee";
@@ -38,4 +39,7 @@ public class NetworkConstants {
      */
     public static final String QUERY_OPEN_COMMENTS_URL = BASE_URL + COMMENT + "/open-comments/";
     public static final String INSERT_PARENT_COMMENT_URL = BASE_URL + COMMENT + "/parent-comment";
+    public static final String QUERY_COMMENT_URL = BASE_URL + COMMENT + "/parent-comment/";
+    public static final String INSERT_CHILD_COMMENT_URL = BASE_URL + COMMENT + "/child-comment";
+    public static final String CONFIRM_COMMENT_URL = BASE_URL + COMMENT + "/confirm/";
 }

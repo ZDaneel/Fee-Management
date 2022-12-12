@@ -20,5 +20,19 @@ public interface CommentMapper extends BaseMapper<Comment> {
      * @return 评论列表
      */
     List<Comment> queryOpenParentComments(@Param("feeId") Integer feeId);
+
+    /**
+     * 根据评论id查询评论具体信息
+     * @param commentId 评论id
+     * @return 评论具体信息
+     */
+    Comment queryParentCommentByCommentId(@Param("commentId") Integer commentId);
+
+    /**
+     * 根据pid查询子评论列表
+     * @param parentId 父评论id
+     * @return 子评论列表
+     */
+    List<Comment> queryChildCommentsByParentCommentId(@Param("parentId") Integer parentId);
 }
 
