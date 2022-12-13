@@ -61,12 +61,7 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         binding.test.setOnClickListener(view1 -> {
-            InputTextMsgDialog inputTextMsgDialog = new InputTextMsgDialog(LoginActivity.this, R.style.dialog_center);
-            inputTextMsgDialog.show();
-            inputTextMsgDialog.setmOnTextSendListener(msg -> {
-                Log.e(TAG, "发送后的回调" + msg);
-            });
-            //test(view);
+            test(view);
         });
 
         setImage();
@@ -159,7 +154,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void test(View view) {
-        OkHttpUtils.get(NetworkConstants.BASE_URL + "/student/query/1",
+        OkHttpUtils.get(NetworkConstants.BASE_URL + "/student/query/0/1?name=john",
                 new OkHttpCallback() {
                     @Override
                     public void onFinish(String dataJson) throws JsonProcessingException {

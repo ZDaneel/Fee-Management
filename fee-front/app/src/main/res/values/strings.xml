@@ -4,7 +4,6 @@
     <string name="prompt_no">学号</string>
     <string name="action_sign_in">登陆或注册</string>
     <string name="system_name">班费管理系统</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_home">Home</string>
     <string name="title_setting">Setting</string>

@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -49,6 +51,9 @@ public class FeeListFragment extends Fragment {
     private FeeAdapter feeAdapter;
     private RecyclerView feeRecyclerView;
 
+    private int spinnerStatus = 0;
+    private int classId;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -56,10 +61,48 @@ public class FeeListFragment extends Fragment {
         feeRecyclerView = binding.feeList;
         feeRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         feeRecyclerView.addItemDecoration(new DividerItemDecoration(requireContext(),DividerItemDecoration.VERTICAL));
-        int classId = FeeListFragmentArgs.fromBundle(getArguments()).getClassId();
-        handleAddButton(classId);
-        updateData(classId);
+        classId = FeeListFragmentArgs.fromBundle(getArguments()).getClassId();
+        handleSpinner();
+        handleSearch();
+        handleAddButton();
+        updateData();
         return binding.getRoot();
+    }
+
+    private void handleSearch() {
+        binding.feeSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                Log.e(TAG, "搜索按钮提交: " + s);
+
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                return false;
+            }
+        });
+    }
+
+    /**
+     * 处理下拉框选择
+     */
+    private void handleSpinner() {
+        binding.feeSpinnerView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if (CommonConstants.CLOSED == i) {
+                    spinnerStatus = 1;
+                } else {
+                    spinnerStatus = 0;
+                }
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
     }
 
     /**
@@ -67,7 +110,7 @@ public class FeeListFragment extends Fragment {
      * - 根据权限显示是否显示
      * - 点击后跳转到新增页面
      */
-    private void handleAddButton(int classId) {
+    private void handleAddButton() {
         FloatingActionButton btnFeeAdd = binding.btnFeeAdd;
 
         OkHttpUtils.get(NetworkConstants.QUERY_ROLE_URL + classId, new OkHttpCallback() {
@@ -93,7 +136,8 @@ public class FeeListFragment extends Fragment {
     /**
      * 获取传递过来的班级id 查询fee列表并展示
      */
-    private void updateData(int classId) {
+    private void updateData() {
+
         OkHttpUtils.get(NetworkConstants.QUERY_OPEN_FEES_URL + classId, new OkHttpCallback() {
             @Override
             public void onFinish(String dataJson) throws JsonProcessingException {

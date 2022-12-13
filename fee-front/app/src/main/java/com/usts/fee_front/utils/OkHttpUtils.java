@@ -4,14 +4,19 @@ import static android.content.Context.MODE_PRIVATE;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Environment;
 import android.util.Log;
 
 import com.usts.fee_front.MyApplication;
 
+import java.io.File;
+
 import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 
 /**
  * OkHttpUtils文件，用于获取URL上get或者post、downFile等方法的信息
@@ -58,11 +63,26 @@ public class OkHttpUtils {
         CLIENT.newCall(request).enqueue(callback);
     }
 
-    public static void downFile(String url, final String saveDir, OkHttpCallback callback) {
+    public static void uploadImage(String url, File file, OkHttpCallback callback) {
+        // 请求体
+        RequestBody body = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart(
+                        "file",
+                        file.getName(),
+                        MultipartBody.create(MediaType.parse("multipart/form-data"), file)
+                ).build();
+        // Post 请求
+        String sessionId = getSessionId();
         callback.url = url;
-        Request request = new Request.Builder().url(url).build();
+        Request request = new Request.Builder()
+                .url(url)
+                .addHeader("cookie", sessionId)
+                .post(body)
+                .build();
         CLIENT.newCall(request).enqueue(callback);
     }
+
 
     private static String getSessionId() {
         Context context = MyApplication.getContext();

@@ -8,9 +8,20 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.usts.fee_front.MyApplication;
 import com.usts.fee_front.R;
 import com.usts.fee_front.pojo.Fee;
+import com.usts.fee_front.utils.NetworkConstants;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -73,7 +84,6 @@ public class FeeAdapter extends RecyclerView.Adapter<FeeAdapter.FeeHolder>{
 
         public FeeHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.list_item_fee, parent, false));
-            // TODO 图片view处理
             mNameView = itemView.findViewById(R.id.item_fee_name);
             mMoneyView = itemView.findViewById(R.id.item_fee_money);
             mAcceptorView = itemView.findViewById(R.id.item_fee_acceptor);
@@ -93,13 +103,20 @@ public class FeeAdapter extends RecyclerView.Adapter<FeeAdapter.FeeHolder>{
             String fname = " " + fee.getFname();
             String money = " " + fee.getMoney();
             String acceptor = " " + fee.getAcceptor();
-            // TODO 日期格式处理 图片处理
-            mImageView.setImageResource(R.drawable.ic_image_camera);
-            String date = " " + fee.getCreateTime();
+            Date createTime = fee.getCreateTime();
+            String imageUrl = NetworkConstants.GET_IMAGE_URL + fee.getImageUrl();
+
             mNameView.append(fname);
             mMoneyView.append(money);
             mAcceptorView.append(acceptor);
-            mDateView.append(date);
+            Glide.with(MyApplication.getContext()).load(imageUrl).into(mImageView);
+            // 使用java8的时间api转格式
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                Instant instant = createTime.toInstant();
+                LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
+                String format = " " + localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                mDateView.append(format);
+            }
         }
     }
 }

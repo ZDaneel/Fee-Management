@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
+import com.bumptech.glide.Glide;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.usts.fee_front.R;
@@ -73,6 +74,18 @@ public class FeeDetailFragment extends Fragment {
                         String fname = " " + fee.getFname();
                         String moneyString = " " + fee.getMoney();
                         String acceptor = " " + fee.getAcceptor();
+                        String feeImageUrl = fee.getImageUrl();
+                        String noteImageUrl = fee.getNoteUrl();
+                        if (feeImageUrl != null) {
+                            Glide.with(requireContext())
+                                    .load(NetworkConstants.GET_IMAGE_URL + feeImageUrl)
+                                    .into(binding.detailFeeImage);
+                        }
+                        if (noteImageUrl != null) {
+                            Glide.with(requireContext())
+                                    .load(NetworkConstants.GET_IMAGE_URL + noteImageUrl)
+                                    .into(binding.detailNoteImage);
+                        }
                         binding.detailFeeName.append(fname);
                         binding.detailFeeMoney.append(moneyString);
                         binding.detailFeeAcceptor.append(acceptor);

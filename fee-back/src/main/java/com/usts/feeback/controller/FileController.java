@@ -26,9 +26,9 @@ public class FileController {
 
     @SneakyThrows
     @PostMapping("/upload")
-    public String upload(@RequestParam MultipartFile file) {
+    public Result<String> upload(@RequestParam MultipartFile file) {
         if (file.isEmpty()) {
-            return "图片上传失败";
+            return Result.error("图片上传失败");
         }
         /*
          * 重命名并上传文件到根目录
@@ -40,7 +40,7 @@ public class FileController {
         String path = fileUploadPath + fileName;
         System.out.println(path);
         file.transferTo(FileUtil.touch(path));
-        return fileName;
+        return Result.success(fileName);
     }
 
     @GetMapping("/login-image")

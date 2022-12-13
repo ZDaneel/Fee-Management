@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="32dp"
             android:iconifiedByDefault="false"
-            android:queryHint="请输入搜索内容"
+            android:queryHint="请输入支出名称"
             app:layout_constraintBottom_toBottomOf="parent"
             tools:layout_editor_absoluteX="0dp" />
 
