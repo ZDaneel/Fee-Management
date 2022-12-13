@@ -22,16 +22,18 @@ public class CommentController {
     @Resource
     private CommentService commentService;
 
-    @ApiOperation(value = "查询开支id所对应的未关闭评论列表")
-    @GetMapping("/open-comments/{feeId}")
-    public Result<List<Comment>> queryOpenComments(@PathVariable("feeId") Integer feeId) {
-        return Result.success(commentService.queryOpenParentComments(feeId));
+    @ApiOperation(value = "查询开支id所对应的未关闭评论列表, 查询参数为名称")
+    @GetMapping(value = {"/open-comments/{feeId}/{title}", "/open-comments/{feeId}"})
+    public Result<List<Comment>> queryOpenComments(@PathVariable("feeId") Integer feeId,
+                                                   @PathVariable(value = "title", required = false) String title) {
+        return Result.success(commentService.queryOpenParentComments(feeId, title));
     }
 
-    @ApiOperation(value = "查询开支id所对应的已关闭评论列表")
-    @GetMapping("/closed-comments/{feeId}")
-    public Result<List<Fee>> queryClosedFees(@PathVariable("feeId") Integer feeId) {
-        return Result.success();
+    @ApiOperation(value = "查询开支id所对应的已关闭评论列表, 查询参数为名称")
+    @GetMapping(value = {"/closed-comments/{feeId}/{title}", "/closed-comments/{feeId}"})
+    public Result<List<Comment>> queryClosedFees(@PathVariable("feeId") Integer feeId,
+                                             @PathVariable(value = "title", required = false) String title) {
+        return Result.success(commentService.queryClosedParentComments(feeId, title));
     }
 
     @ApiOperation(value = "新增父级评论")

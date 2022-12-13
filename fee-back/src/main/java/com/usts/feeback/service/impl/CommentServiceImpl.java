@@ -90,11 +90,19 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
     }
 
     @Override
-    public List<Comment> queryOpenParentComments(Integer feeId) {
+    public List<Comment> queryOpenParentComments(Integer feeId, String title) {
         /*
          * 查询未关闭的父级评论
          */
-        return commentMapper.queryOpenParentComments(feeId);
+        return commentMapper.queryOpenParentComments(feeId, title);
+    }
+
+    @Override
+    public List<Comment> queryClosedParentComments(Integer feeId, String title) {
+        /*
+         * 查询已关闭的父级评论
+         */
+        return commentMapper.queryClosedParentComments(feeId, title);
     }
 
 

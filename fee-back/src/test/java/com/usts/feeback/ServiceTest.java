@@ -84,7 +84,7 @@ public class ServiceTest {
 
     @Test
     void testQueryOpenParentComments() {
-        commentService.queryOpenParentComments(1);
+        commentService.queryOpenParentComments(1, "");
     }
 
     @Test

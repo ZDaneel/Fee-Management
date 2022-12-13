@@ -8,6 +8,7 @@ import com.usts.feeback.utils.Result;
 import com.usts.feeback.utils.StudentHolder;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,8 +35,11 @@ public class StudentController {
     private StudentService studentService;
 
     @ApiOperation(value = "根据id查询学生-测试用", hidden = true)
-    @GetMapping("/query/{id}")
-    public Result<Student> queryStudents(@PathVariable("id")Integer id, HttpServletRequest request) {
+    @GetMapping("/query/{status}/{id}/{name}")
+    public Result<Student> queryStudents(@PathVariable("id")Integer id,
+                                         @PathVariable("status") Integer status,
+                                         @PathVariable("name") Integer name,
+                                         HttpServletRequest request) {
         Student student = studentService.getOne(
                 Wrappers
                         .<Student>lambdaQuery()

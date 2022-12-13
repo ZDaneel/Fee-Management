@@ -22,7 +22,7 @@ public class MvcConfig implements WebMvcConfigurer {
         registry.addInterceptor(new LoginInterceptor())
                 .excludePathPatterns("/student/login",
                         "/swagger-resources/**", "/webjars/**", "/v2/**", "/doc.html/**",
-                        "/file/**", "/images/**");
+                        "/file/login-image");
     }
 
     @Override

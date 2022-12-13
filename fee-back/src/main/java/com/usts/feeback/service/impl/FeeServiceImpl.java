@@ -38,15 +38,15 @@ public class FeeServiceImpl extends ServiceImpl<FeeMapper, Fee> implements FeeSe
     private CommentService commentService;
     @Override
     @Transactional(rollbackFor = RuntimeException.class)
-    public List<Fee> queryOpenFees(Integer classId) {
+    public List<Fee> queryOpenFees(Integer classId, String name) {
         /*
          * 根据班级id和未关闭查询
-         *
          */
         List<Fee> feeList = list(
                 new LambdaQueryWrapper<Fee>()
                         .eq(Fee::getCollegeClassId, classId)
                         .eq(Fee::getClosed, 0)
+                        .like(null != name, Fee::getFname, name)
         );
         if (feeList.size() == 0) {
             return null;
@@ -97,6 +97,23 @@ public class FeeServiceImpl extends ServiceImpl<FeeMapper, Fee> implements FeeSe
         lambdaQueryWrapper.eq(Fee::getId, feeId).select(Fee::getClosed);
         Fee one = getOne(lambdaQueryWrapper);
         return Result.success(one.getClosed());
+    }
+
+    @Override
+    public List<Fee> queryClosedFees(Integer classId, String name) {
+        /*
+         * 根据班级id和未关闭查询
+         */
+        List<Fee> feeList = list(
+                new LambdaQueryWrapper<Fee>()
+                        .eq(Fee::getCollegeClassId, classId)
+                        .eq(Fee::getClosed, 1)
+                        .like(null != name, Fee::getFname, name)
+        );
+        if (feeList.size() == 0) {
+            return null;
+        }
+        return feeList;
     }
 
     /**

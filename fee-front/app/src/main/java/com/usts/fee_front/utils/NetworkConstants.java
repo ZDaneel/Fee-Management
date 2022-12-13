@@ -44,6 +44,7 @@ public class NetworkConstants {
      * 评论相关
      */
     public static final String QUERY_OPEN_COMMENTS_URL = COMMENT_URL + "/open-comments/";
+    public static final String QUERY_CLOSED_COMMENTS_URL = COMMENT_URL + "/closed-comments/";
     public static final String INSERT_PARENT_COMMENT_URL = COMMENT_URL + "/parent-comment";
     public static final String QUERY_COMMENT_URL = COMMENT_URL + "/parent-comment/";
     public static final String INSERT_CHILD_COMMENT_URL = COMMENT_URL + "/child-comment";

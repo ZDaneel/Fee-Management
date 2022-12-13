@@ -15,11 +15,20 @@ import java.util.List;
 public interface CommentService extends IService<Comment> {
 
     /**
-     * 开支id所对应的简略版评论
+     * 开支id所对应的开放简略版评论
      * @param feeId 开支id
+     * @param title 评论标题
      * @return 评论列表
      */
-    List<Comment> queryOpenParentComments(Integer feeId);
+    List<Comment> queryOpenParentComments(Integer feeId, String title);
+
+    /**
+     * 开支id所对应的开放简略版评论
+     * @param feeId 开支id
+     * @param title 评论标题
+     * @return 评论列表
+     */
+    List<Comment> queryClosedParentComments(Integer feeId, String title);
 
     /**
      * 开启异步任务关闭任务

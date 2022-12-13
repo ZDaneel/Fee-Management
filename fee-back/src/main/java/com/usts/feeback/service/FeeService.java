@@ -18,9 +18,10 @@ public interface FeeService extends IService<Fee> {
     /**
      * 通过班级id查询未关闭的支出列表
      * @param classId 班级id
+     * @param name 支出名称
      * @return 支出列表
      */
-    List<Fee> queryOpenFees(Integer classId);
+    List<Fee> queryOpenFees(Integer classId, String name);
 
     /**
      * 插入支出
@@ -35,4 +36,11 @@ public interface FeeService extends IService<Fee> {
      * @return 是否关闭
      */
     Result<Integer> queryFeeStatus(Integer feeId);
+    /**
+     * 通过班级id查询已关闭的支出列表
+     * @param classId 班级id
+     * @param name 支出名称
+     * @return 支出列表
+     */
+    List<Fee> queryClosedFees(Integer classId, String name);
 }

@@ -30,9 +30,28 @@
                target_id
         from comment
                  left join college_student on student_id = college_student.id
-        where target_id = #{feeId}
-          and pid = 0
-          and closed = 0
+        <where>
+            and target_id = #{feeId}
+            and pid = 0
+            and closed = 0
+            <if test="title != null  and title != ''">and title like CONCAT ('%',#{title},'%')</if>
+        </where>
+    </select>
+
+    <select id="queryClosedParentComments" resultMap="BriefCommentResult">
+        select comment.id as id,
+        title,
+        sname,
+        student_id,
+        target_id
+        from comment
+        left join college_student on student_id = college_student.id
+        <where>
+            and target_id = #{feeId}
+            and pid = 0
+            and closed = 1
+            <if test="title != null  and title != ''">and title like CONCAT ('%',#{title},'%')</if>
+        </where>
     </select>
 
     <select id="queryParentCommentByCommentId" resultMap="CommentResult">

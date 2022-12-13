@@ -52,6 +52,7 @@ public class FeeListFragment extends Fragment {
     private RecyclerView feeRecyclerView;
 
     private int spinnerStatus = 0;
+    private String msg;
     private int classId;
 
     @Nullable
@@ -60,12 +61,12 @@ public class FeeListFragment extends Fragment {
         binding = FragmentFeeListBinding.inflate(inflater, container, false);
         feeRecyclerView = binding.feeList;
         feeRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        feeRecyclerView.addItemDecoration(new DividerItemDecoration(requireContext(),DividerItemDecoration.VERTICAL));
+        feeRecyclerView.addItemDecoration(new DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL));
         classId = FeeListFragmentArgs.fromBundle(getArguments()).getClassId();
         handleSpinner();
         handleSearch();
         handleAddButton();
-        updateData();
+        updateData(null);
         return binding.getRoot();
     }
 
@@ -73,13 +74,14 @@ public class FeeListFragment extends Fragment {
         binding.feeSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
-                Log.e(TAG, "搜索按钮提交: " + s);
-
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String s) {
+                Log.e(TAG, "改变搜索" + s);
+                msg = s;
+                updateData(s);
                 return false;
             }
         });
@@ -92,11 +94,11 @@ public class FeeListFragment extends Fragment {
         binding.feeSpinnerView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (CommonConstants.CLOSED == i) {
-                    spinnerStatus = 1;
-                } else {
-                    spinnerStatus = 0;
+                if (spinnerStatus == i) {
+                    return;
                 }
+                spinnerStatus = (1 == i) ? 1 : 0;
+                updateData(msg);
             }
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
@@ -136,9 +138,22 @@ public class FeeListFragment extends Fragment {
     /**
      * 获取传递过来的班级id 查询fee列表并展示
      */
-    private void updateData() {
+    private void updateData(String name) {
 
-        OkHttpUtils.get(NetworkConstants.QUERY_OPEN_FEES_URL + classId, new OkHttpCallback() {
+        String url;
+        String baseUrl;
+        if (CommonConstants.CLOSED == spinnerStatus) {
+            baseUrl = NetworkConstants.QUERY_CLOSED_FEES_URL + classId;
+        } else {
+            baseUrl = NetworkConstants.QUERY_OPEN_FEES_URL + classId;
+        }
+        if (name == null) {
+            url = baseUrl;
+        } else {
+            url = baseUrl + "/" + name;
+        }
+        Log.e(TAG, "url: " + url);
+        OkHttpUtils.get(url, new OkHttpCallback() {
             @Override
             public void onFinish(String dataJson) throws JsonProcessingException {
                 List<Fee> feeList;

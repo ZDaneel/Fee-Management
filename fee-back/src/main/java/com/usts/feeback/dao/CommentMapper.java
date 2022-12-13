@@ -15,11 +15,20 @@ import java.util.List;
 public interface CommentMapper extends BaseMapper<Comment> {
 
     /**
-     * 根据feeId查询评论列表
+     * 根据feeId查询未关闭的评论列表
      * @param feeId 开支id
+     * @param title 评论标题
      * @return 评论列表
      */
-    List<Comment> queryOpenParentComments(@Param("feeId") Integer feeId);
+    List<Comment> queryOpenParentComments(@Param("feeId") Integer feeId, @Param("title") String title);
+
+    /**
+     * 根据feeId查询已关闭的评论列表
+     * @param feeId 开支id
+     * @param title 评论标题
+     * @return 评论列表
+     */
+    List<Comment> queryClosedParentComments(@Param("feeId")Integer feeId, @Param("title") String title);
 
     /**
      * 根据评论id查询评论具体信息
