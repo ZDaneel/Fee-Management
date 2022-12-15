@@ -17,7 +17,7 @@ import java.util.List;
  * @author leenadz
  * @since 2022-12-10 14:20
  */
-@Api(tags = "班费支出信息")
+@Api(tags = "班费信息接口")
 @RestController
 @RequestMapping("/fee")
 public class FeeController {
@@ -56,5 +56,17 @@ public class FeeController {
     @GetMapping("/status/{feeId}")
     public Result<Integer> queryFeeStatus(@PathVariable("feeId") Integer feeId) {
         return feeService.queryFeeStatus(feeId);
+    }
+
+    @ApiOperation(value = "删除支出")
+    @PostMapping("/delete")
+    public Result<Boolean> deleteFee(@RequestBody Fee fee) {
+        return feeService.deleteFee(fee);
+    }
+
+    @ApiOperation(value = "修改支出")
+    @PostMapping("/update")
+    public Result<Boolean> updateFee(@RequestBody Fee fee) {
+        return Result.success(feeService.updateById(fee));
     }
 }

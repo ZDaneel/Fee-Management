@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="150dp"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    tools:layout_editor_absoluteX="-7dp"
+    tools:layout_editor_absoluteY="3dp">
 
     <ImageView
         android:id="@+id/item_fee_image"
@@ -17,51 +19,64 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+        android:id="@+id/item_fee_date"
+        android:layout_width="170dp"
+        android:layout_height="25dp"
+        android:layout_marginTop="108dp"
+        android:text="@string/fee_date"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.701"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
         android:id="@+id/item_fee_name"
-        android:layout_width="180dp"
+        android:layout_width="170dp"
         android:layout_height="25dp"
         android:layout_marginTop="16dp"
         android:text="@string/fee_name"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.826"
+        app:layout_constraintHorizontal_bias="0.701"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/item_fee_money"
-        android:layout_width="180dp"
+        android:layout_width="170dp"
         android:layout_height="25dp"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="44dp"
         android:text="@string/fee_money"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.826"
+        app:layout_constraintHorizontal_bias="0.701"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/item_fee_acceptor"
-        android:layout_width="180dp"
+        android:layout_width="170dp"
         android:layout_height="25dp"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="76dp"
         android:text="@string/fee_acceptor"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.826"
+        app:layout_constraintHorizontal_bias="0.701"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/item_fee_date"
-        android:layout_width="180dp"
-        android:layout_height="25dp"
-        android:layout_marginTop="112dp"
-        android:text="@string/fee_date"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.826"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/item_fee_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="52dp"
+        android:contentDescription="@string/fee_item_delete"
+        android:src="@drawable/ic_dialog_delete"
+        android:text="@string/fee_delete_confirm"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

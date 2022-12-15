@@ -80,6 +80,10 @@ public class Comment {
      * 子回复列表
      */
     private List<Comment> replyList = new ArrayList<>();
+    /**
+     * 逻辑删除
+     */
+    private Integer deleted;
 
     /**
      * 已确认的学生ids
@@ -196,6 +200,14 @@ public class Comment {
 
     public void setConfirmIds(Set<String> confirmIds) {
         this.confirmIds = confirmIds;
+    }
+
+    public Integer getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Integer deleted) {
+        this.deleted = deleted;
     }
 
     @NonNull

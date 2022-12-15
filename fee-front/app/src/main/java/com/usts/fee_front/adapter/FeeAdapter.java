@@ -2,6 +2,7 @@ package com.usts.fee_front.adapter;
 
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -27,15 +28,16 @@ import java.util.List;
 /**
  * @author zdaneel
  */
-public class FeeAdapter extends RecyclerView.Adapter<FeeAdapter.FeeHolder>{
+public class FeeAdapter extends RecyclerView.Adapter<FeeAdapter.FeeHolder> {
     private final List<Fee> feeList;
     private CallBack callBack;
 
     /**
      * 定义 setCallBack() 方法
+     *
      * @param callBack 回调
      */
-    public void setCallBack(CallBack callBack){
+    public void setCallBack(CallBack callBack) {
         this.callBack = callBack;
     }
 
@@ -43,13 +45,21 @@ public class FeeAdapter extends RecyclerView.Adapter<FeeAdapter.FeeHolder>{
         return callBack;
     }
 
-    public interface CallBack{
+    public interface CallBack {
         /**
          * 点击事件
          * 传递被点击的班级
+         *
          * @param fee 支出
          */
         void onClick(Fee fee);
+
+        /**
+         * 删除开支
+         *
+         * @param fee 开支
+         */
+        void delete(Fee fee);
     }
 
     public FeeAdapter(List<Fee> feeList) {
@@ -80,6 +90,7 @@ public class FeeAdapter extends RecyclerView.Adapter<FeeAdapter.FeeHolder>{
         private final TextView mAcceptorView;
         private final TextView mDateView;
         private final ImageView mImageView;
+        private final ImageButton mImageButton;
         private Fee fee;
 
         public FeeHolder(LayoutInflater inflater, ViewGroup parent) {
@@ -89,12 +100,12 @@ public class FeeAdapter extends RecyclerView.Adapter<FeeAdapter.FeeHolder>{
             mAcceptorView = itemView.findViewById(R.id.item_fee_acceptor);
             mDateView = itemView.findViewById(R.id.item_fee_date);
             mImageView = itemView.findViewById(R.id.item_fee_image);
-            itemView.setOnClickListener(view -> {
-                CallBack callBack = getCallBack();
-                if (callBack != null) {
-                    callBack.onClick(fee);
-                }
-            });
+            mImageButton = itemView.findViewById(R.id.item_fee_delete);
+            CallBack callBack = getCallBack();
+            if (callBack != null) {
+                itemView.setOnClickListener(view -> callBack.onClick(fee));
+                mImageButton.setOnClickListener(view -> callBack.delete(fee));
+            }
         }
 
 
@@ -104,12 +115,16 @@ public class FeeAdapter extends RecyclerView.Adapter<FeeAdapter.FeeHolder>{
             String money = " " + fee.getMoney();
             String acceptor = " " + fee.getAcceptor();
             Date createTime = fee.getCreateTime();
-            String imageUrl = NetworkConstants.GET_IMAGE_URL + fee.getImageUrl();
+            String imageUrl = fee.getImageUrl();
 
             mNameView.append(fname);
             mMoneyView.append(money);
             mAcceptorView.append(acceptor);
-            Glide.with(MyApplication.getContext()).load(imageUrl).into(mImageView);
+            if (imageUrl != null) {
+                Glide.with(MyApplication.getContext())
+                        .load(NetworkConstants.GET_IMAGE_URL + imageUrl)
+                        .into(mImageView);
+            }
             // 使用java8的时间api转格式
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                 Instant instant = createTime.toInstant();

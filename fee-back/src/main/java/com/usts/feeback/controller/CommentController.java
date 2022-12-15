@@ -15,7 +15,7 @@ import java.util.List;
  * @author leenadz
  * @since 2022-12-10 20:47
  */
-@Api(tags = "评论信息")
+@Api(tags = "评论信息接口")
 @RestController
 @RequestMapping("/comment")
 public class CommentController {

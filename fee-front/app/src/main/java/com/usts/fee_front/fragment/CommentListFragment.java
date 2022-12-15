@@ -4,9 +4,12 @@ package com.usts.fee_front.fragment;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -45,6 +48,11 @@ public class CommentListFragment extends Fragment {
     private CommentAdapter commentAdapter;
     private RecyclerView commentRecyclerView;
 
+    private int spinnerStatus = 0;
+    private String title;
+    private int classId;
+    private int feeId;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -52,20 +60,58 @@ public class CommentListFragment extends Fragment {
         commentRecyclerView = binding.commentList;
         commentRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         commentRecyclerView.addItemDecoration(new DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL));
-        int feeId = CommentListFragmentArgs.fromBundle(getArguments()).getFeeId();
-        int classId = CommentListFragmentArgs.fromBundle(getArguments()).getClassId();
-        updateData(feeId, classId);
-        handleAddButton(feeId);
+        feeId = CommentListFragmentArgs.fromBundle(getArguments()).getFeeId();
+        classId = CommentListFragmentArgs.fromBundle(getArguments()).getClassId();
+        handleSpinner();
+        handleSearch();
+        handleAddButton();
+        updateData(null);
         return binding.getRoot();
+    }
+
+    private void handleSearch() {
+        binding.commentSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                Log.e(TAG, "改变搜索" + s);
+                title = s;
+                updateData(s);
+                return false;
+            }
+        });
+    }
+
+    /**
+     * 处理下拉框选择
+     */
+    private void handleSpinner() {
+        binding.commentSpinnerView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if (spinnerStatus == i) {
+                    return;
+                }
+                spinnerStatus = (1 == i) ? 1 : 0;
+                updateData(title);
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
     }
 
     /**
      * 处理添加按钮
      * 如果开支已经关闭，不显示添加按钮
      *
-     * @param feeId 开支id
      */
-    private void handleAddButton(int feeId) {
+    private void handleAddButton() {
         FloatingActionButton btnFeeAdd = binding.btnCommentAdd;
         OkHttpUtils.get(NetworkConstants.QUERY_FEE_STATUS_URL + feeId, new OkHttpCallback() {
             @Override
@@ -94,8 +140,20 @@ public class CommentListFragment extends Fragment {
     /**
      * feeId查询对应的评论信息
      */
-    private void updateData(int feeId, int classId) {
-        OkHttpUtils.get(NetworkConstants.QUERY_OPEN_COMMENTS_URL + feeId, new OkHttpCallback() {
+    private void updateData(String title) {
+        String url;
+        String baseUrl;
+        if (CommonConstants.CLOSED == spinnerStatus) {
+            baseUrl = NetworkConstants.QUERY_CLOSED_COMMENTS_URL + feeId;
+        } else {
+            baseUrl = NetworkConstants.QUERY_OPEN_COMMENTS_URL + feeId;
+        }
+        if (title == null) {
+            url = baseUrl;
+        } else {
+            url = baseUrl + "/" + title;
+        }
+        OkHttpUtils.get(url, new OkHttpCallback() {
             @Override
             public void onFinish(String dataJson) throws JsonProcessingException {
                 List<Comment> commentList;

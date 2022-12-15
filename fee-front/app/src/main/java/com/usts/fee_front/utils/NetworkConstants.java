@@ -37,8 +37,10 @@ public class NetworkConstants {
     public static final String QUERY_OPEN_FEES_URL = FEE_URL + "/open-fees/";
     public static final String QUERY_CLOSED_FEES_URL = FEE_URL + "/closed-fees/";
     public static final String INSERT_FEE_URL = FEE_URL + "/fee";
+    public static final String UPDATE_FEE_URL = FEE_URL + "/update";
     public static final String QUERY_FEE_URL = FEE_URL + "/fee/";
     public static final String QUERY_FEE_STATUS_URL = FEE_URL + "/status/";
+    public static final String DELETE_FEE_URL = FEE_URL + "/delete";
 
     /**
      * 评论相关

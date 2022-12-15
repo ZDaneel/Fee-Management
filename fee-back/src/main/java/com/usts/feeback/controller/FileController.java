@@ -2,6 +2,8 @@ package com.usts.feeback.controller;
 
 import cn.hutool.core.io.FileUtil;
 import com.usts.feeback.utils.Result;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.ResourceUtils;
@@ -17,6 +19,7 @@ import java.util.UUID;
  * @author leenadz
  * @since 2022-12-12 19:47
  */
+@Api(tags = "文件信息接口")
 @RestController
 @RequestMapping("/file")
 public class FileController {
@@ -25,6 +28,7 @@ public class FileController {
     private String fileUploadPath;
 
     @SneakyThrows
+    @ApiOperation("图片上传并保存到服务器中")
     @PostMapping("/upload")
     public Result<String> upload(@RequestParam MultipartFile file) {
         if (file.isEmpty()) {
@@ -43,6 +47,7 @@ public class FileController {
         return Result.success(fileName);
     }
 
+    @ApiOperation(value = "登陆页面使用图片")
     @GetMapping("/login-image")
     public Result<String> queryLoginImage() {
         String fileName = "bb39991acccf4937823b0e344683cdbe.JPG";

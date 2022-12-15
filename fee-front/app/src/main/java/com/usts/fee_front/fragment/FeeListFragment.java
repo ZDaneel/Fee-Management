@@ -100,6 +100,7 @@ public class FeeListFragment extends Fragment {
                 spinnerStatus = (1 == i) ? 1 : 0;
                 updateData(msg);
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
 
@@ -165,14 +166,34 @@ public class FeeListFragment extends Fragment {
                 }
                 handler.post(() -> {
                     feeAdapter = new FeeAdapter(feeList);
-                    FeeAdapter.CallBack callBack = fee -> {
-                        Bundle bundle = new FeeDetailFragmentArgs.Builder()
-                                .setFeeId(fee.getId())
-                                .setClassId(classId)
-                                .build()
-                                .toBundle();
-                        NavHostFragment.findNavController(FeeListFragment.this)
-                                .navigate(R.id.action_feeListFragment_to_feeDetailFragment, bundle);
+                    FeeAdapter.CallBack callBack = new FeeAdapter.CallBack() {
+                        @Override
+                        public void onClick(Fee fee) {
+                            Bundle bundle = new FeeDetailFragmentArgs.Builder()
+                                    .setFeeId(fee.getId())
+                                    .setClassId(classId)
+                                    .build()
+                                    .toBundle();
+                            NavHostFragment.findNavController(FeeListFragment.this)
+                                    .navigate(R.id.action_feeListFragment_to_feeDetailFragment, bundle);
+                        }
+
+                        @Override
+                        public void delete(Fee fee) {
+                            try {
+                                String feeJson = mapper.writeValueAsString(fee);
+                                OkHttpUtils.post(NetworkConstants.DELETE_FEE_URL, feeJson, new OkHttpCallback() {
+                                    @Override
+                                    public void onFinish(String dataJson) {
+                                        handler.post(() -> {
+                                            updateData(msg);
+                                        });
+                                    }
+                                });
+                            } catch (JsonProcessingException e) {
+                                e.printStackTrace();
+                            }
+                        }
                     };
                     feeAdapter.setCallBack(callBack);
                     feeRecyclerView.setAdapter(feeAdapter);

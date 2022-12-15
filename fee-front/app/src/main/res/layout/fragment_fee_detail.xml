@@ -7,7 +7,7 @@
 
     <TextView
         android:id="@+id/detail_fee_title"
-        android:layout_width="162dp"
+        android:layout_width="130dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
         android:ems="10"
@@ -107,15 +107,27 @@
 
     <Button
         android:id="@+id/btn_check"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/cardview_light_background"
         android:text="@string/btn_check"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.192"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.486" />
+        app:layout_constraintVertical_bias="0.771" />
+
+    <ImageButton
+        android:id="@+id/btn_edit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="148dp"
+        android:layout_marginTop="28dp"
+        android:contentDescription="@string/fee_item_edit"
+        android:src="@drawable/ic_setting_edit"
+        android:text="@string/fee_delete_confirm"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

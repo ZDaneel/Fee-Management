@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -103,7 +104,7 @@ public class CommentDetailFragment extends Fragment {
 
     /**
      * 判断权限
-     *
+     * - 有权限才能弹出输入弹窗
      * @param comment 当前评论
      */
     private void judgeRole(Comment comment) {
@@ -121,6 +122,13 @@ public class CommentDetailFragment extends Fragment {
         });
     }
 
+    /**
+     * 更新数据
+     * - 查询评论数据
+     * - 更新确认按钮状态
+     * - 填充页面
+     * @param commentId 评论id
+     */
     private void updateData(Integer commentId) {
         OkHttpUtils.get(NetworkConstants.QUERY_COMMENT_URL + commentId, new OkHttpCallback() {
             @Override
@@ -128,11 +136,17 @@ public class CommentDetailFragment extends Fragment {
                 parentComment = mapper.readValue(dataJson, Comment.class);
                 List<Comment> childCommentList = parentComment.getReplyList();
                 Set<String> confirmIds = parentComment.getConfirmIds();
+                Integer commentStatus = parentComment.getClosed();
                 Integer studentId = MyApplication.getStudent().getId();
                 handler.post(() -> {
+                    Button confirmButton = binding.btnConfirm;
                     if (confirmIds.contains(studentId.toString())) {
-                        binding.btnConfirm.setEnabled(false);
-                        binding.btnConfirm.setText("已确认");
+                        confirmButton.setEnabled(false);
+                        confirmButton.setText("已确认");
+                    }
+                    if (CommonConstants.CLOSED == commentStatus) {
+                        confirmButton.setEnabled(false);
+                        confirmButton.setText("已关闭");
                     }
                     String author = parentComment.getStudentName() + ": ";
                     binding.parentCommentTitle.setText(parentComment.getTitle());
@@ -140,7 +154,7 @@ public class CommentDetailFragment extends Fragment {
                     binding.parentCommentStudent.setText(author);
                     replyAdapter = new ReplyAdapter(childCommentList);
                     ReplyAdapter.CallBack callBack = clickedComment -> {
-                        if (CommonConstants.CLOSED == parentComment.getClosed()) {
+                        if (CommonConstants.CLOSED == commentStatus) {
                             Toast.makeText(MyApplication.getContext(), CLOSE_MESSAGE, Toast.LENGTH_SHORT).show();
                         } else {
                             judgeRole(clickedComment);

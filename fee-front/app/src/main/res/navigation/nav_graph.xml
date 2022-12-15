@@ -64,6 +64,9 @@
             android:name="class_id"
             app:argType="integer"
             android:defaultValue="-1" />
+        <action
+            android:id="@+id/action_feeDetailFragment_to_feeEditFragment"
+            app:destination="@id/feeEditFragment" />
     </fragment>
 
     <fragment
@@ -115,5 +118,22 @@
             app:argType="integer"
             android:defaultValue="-1" />
 
+    </fragment>
+    <fragment
+        android:id="@+id/feeEditFragment"
+        android:name="com.usts.fee_front.fragment.FeeEditFragment"
+        android:label="FeeEditFragment"
+        tools:layout="@layout/fragment_fee_edit">
+        <argument
+            android:name="fee_id"
+            app:argType="integer"
+            android:defaultValue="-1" />
+        <action
+            android:id="@+id/action_feeEditFragment_to_feeDetailFragment"
+            app:destination="@id/feeDetailFragment" />
+        <argument
+            android:name="class_id"
+            app:argType="integer"
+            android:defaultValue="-1" />
     </fragment>
 </navigation>

@@ -52,6 +52,10 @@ public class Fee {
      * 所在班级id
      */
     private Integer collegeClassId;
+    /**
+     * 逻辑删除
+     */
+    private Integer deleted;
 
     public Integer getId() {
         return id;
@@ -131,6 +135,14 @@ public class Fee {
 
     public void setCreator(String creator) {
         this.creator = creator;
+    }
+
+    public Integer getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Integer deleted) {
+        this.deleted = deleted;
     }
 
     @NonNull
