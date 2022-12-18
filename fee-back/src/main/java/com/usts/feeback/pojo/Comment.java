@@ -2,10 +2,7 @@ package com.usts.feeback.pojo;
 
 import java.util.*;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.models.auth.In;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -98,6 +95,11 @@ public class Comment implements Serializable {
      */
     @TableField(exist = false)
     private Set<String> confirmIds = new HashSet<>();
+    /**
+     * 逻辑删除
+     */
+    @TableLogic(value = "0", delval = "1")
+    private Integer deleted;
 
     private static final long serialVersionUID = 1L;
 

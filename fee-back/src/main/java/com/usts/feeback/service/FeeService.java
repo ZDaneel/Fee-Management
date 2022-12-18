@@ -43,4 +43,11 @@ public interface FeeService extends IService<Fee> {
      * @return 支出列表
      */
     List<Fee> queryClosedFees(Integer classId, String name);
+
+    /**
+     * 删除支出
+     * @param fee 开支
+     * @return 结果
+     */
+    Result<Boolean> deleteFee(Fee fee);
 }

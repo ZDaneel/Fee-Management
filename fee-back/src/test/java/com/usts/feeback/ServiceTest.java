@@ -70,7 +70,7 @@ public class ServiceTest {
 
     @Test
     void testQueryOpenFees() {
-        feeService.queryOpenFees(1);
+        feeService.queryOpenFees(1, "");
     }
 
     @Test

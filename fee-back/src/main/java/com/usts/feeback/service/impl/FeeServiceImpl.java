@@ -9,6 +9,7 @@ import com.usts.feeback.pojo.Fee;
 import com.usts.feeback.dao.FeeMapper;
 import com.usts.feeback.service.CommentService;
 import com.usts.feeback.service.FeeService;
+import com.usts.feeback.service.StudentService;
 import com.usts.feeback.utils.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
@@ -21,6 +22,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.usts.feeback.utils.Constants.BOOKKEEPER;
 import static com.usts.feeback.utils.Constants.FEE_TTL;
 
 /**
@@ -36,6 +38,10 @@ public class FeeServiceImpl extends ServiceImpl<FeeMapper, Fee> implements FeeSe
     @Resource
     @Lazy
     private CommentService commentService;
+
+    @Resource
+    private StudentService studentService;
+
     @Override
     @Transactional(rollbackFor = RuntimeException.class)
     public List<Fee> queryOpenFees(Integer classId, String name) {
@@ -114,6 +120,32 @@ public class FeeServiceImpl extends ServiceImpl<FeeMapper, Fee> implements FeeSe
             return null;
         }
         return feeList;
+    }
+
+    @Override
+    @Transactional(rollbackFor = RuntimeException.class)
+    public Result<Boolean> deleteFee(Fee fee) {
+        /*
+         * 首先判断是否有权限删除
+         */
+        Integer role = studentService.queryRole(fee.getCollegeClassId());
+        if (BOOKKEEPER != role) {
+            return Result.error("你没有权限删除!");
+        }
+        /*
+         * 先删除对应评论再删除当前支出
+         */
+        LambdaQueryWrapper<Comment> commentLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        commentLambdaQueryWrapper.eq(Comment::getTargetId, fee.getId()).select(Comment::getId);
+        List<Comment> commentList = commentService.list(commentLambdaQueryWrapper);
+        List<Integer> commentIds = commentList.stream()
+                .map(Comment::getId)
+                .collect(Collectors.toList());
+        boolean removeComments = commentService.removeByIds(commentIds);
+        if (!removeComments) {
+            return Result.error("删除失败");
+        }
+        return Result.success(removeById(fee.getId()));
     }
 
     /**

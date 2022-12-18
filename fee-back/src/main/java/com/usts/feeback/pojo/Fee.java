@@ -1,9 +1,6 @@
 package com.usts.feeback.pojo;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -64,6 +61,11 @@ public class Fee implements Serializable {
      * 所在班级id
      */
     private Integer collegeClassId;
+    /**
+     * 逻辑删除
+     */
+    @TableLogic(value = "0", delval = "1")
+    private Integer deleted;
 
     private static final long serialVersionUID = 1L;
 }
