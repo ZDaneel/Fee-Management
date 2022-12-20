@@ -36,7 +36,7 @@ public class StudentController {
 
     @ApiOperation(value = "根据id查询学生-测试用", hidden = true)
     @GetMapping("/query/{status}/{id}/{name}")
-    public Result<Student> queryStudents(@PathVariable("id")Integer id,
+    public Result<Student> queryStudents(@PathVariable("id") Integer id,
                                          @PathVariable("status") Integer status,
                                          @PathVariable("name") Integer name,
                                          HttpServletRequest request) {
@@ -59,7 +59,7 @@ public class StudentController {
 
     @ApiOperation(value = "查询当前用户权限信息", hidden = true)
     @GetMapping("/role/{classId}")
-    public Result<Integer> queryRole(@PathVariable("classId")Integer classId) {
+    public Result<Integer> queryRole(@PathVariable("classId") Integer classId) {
         return Result.success(studentService.queryRole(classId));
     }
 
@@ -68,5 +68,11 @@ public class StudentController {
     public Result<Boolean> logout(HttpServletRequest request) {
         request.getSession().removeAttribute(SESSION_STUDENT_DTO);
         return Result.success();
+    }
+
+    @ApiOperation(value = "session查询当前用户信息")
+    @GetMapping("/me")
+    public Result<StudentDTO> queryStudent() {
+        return Result.success(StudentHolder.getStudent());
     }
 }

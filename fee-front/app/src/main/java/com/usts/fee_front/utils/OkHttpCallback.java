@@ -1,5 +1,10 @@
 package com.usts.fee_front.utils;
 
+import static android.content.Context.MODE_PRIVATE;
+
+
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -12,6 +17,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.usts.fee_front.LoginActivity;
 import com.usts.fee_front.MyApplication;
 
 import java.io.IOException;
@@ -51,6 +57,7 @@ public class OkHttpCallback implements Callback {
                 /*
                  * 取出后端返回json里的code和message
                  *      SUCCESS: 进一步处理
+                 *      NEED_LOGIN: 重定位到登录页面
                  *      ERROR: 如未登陆、密码错误等，直接用Toast进行信息展示
                  */
                 result = body.string();
@@ -66,6 +73,20 @@ public class OkHttpCallback implements Callback {
                     } else {
                         onFinish(jsonNode.toString());
                     }
+                } else if (ResponseCode.NEED_LOGIN == code) {
+                    handler.post(() -> {
+                        Toast.makeText(MyApplication.getContext(), message, Toast.LENGTH_SHORT).show();
+                        SharedPreferences share = MyApplication.getContext().getSharedPreferences("Session", MODE_PRIVATE);
+                        if (share != null) {
+                            SharedPreferences.Editor editor = share.edit();
+                            editor.clear();
+                            editor.apply();
+                        }
+                        MyApplication.setStudent(null);
+                        Intent intent = new Intent(MyApplication.getContext(), LoginActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        MyApplication.getContext().startActivity(intent);
+                    });
                 } else {
                     handler.post(() -> Toast.makeText(MyApplication.getContext(), message, Toast.LENGTH_SHORT).show());
                 }

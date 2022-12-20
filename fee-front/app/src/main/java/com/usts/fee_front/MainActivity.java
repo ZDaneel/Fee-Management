@@ -47,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
 
     public static final String TAG = "MainActivity";
     private AppBarConfiguration appBarConfiguration;
+    private final ObjectMapper mapper = new ObjectMapper();
+    private final Handler handler = new Handler(Looper.getMainLooper());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,8 +57,9 @@ public class MainActivity extends AppCompatActivity {
         View view = binding.getRoot();
         setContentView(view);
         BottomNavigationView navView = findViewById(R.id.nav_view);
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
+        /*
+         * 处理导航信息
+         */
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.navigation_home, R.id.navigation_setting,
                 R.id.feeListFragment, R.id.feeAddFragment, R.id.feeDetailFragment, R.id.feeEditFragment,
@@ -65,6 +68,21 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
+
+        /*
+         * 处理MyApplication中的student数据
+         */
+        if ( null == MyApplication.getStudent()) {
+            OkHttpUtils.get(NetworkConstants.QUERY_ME_URL, new OkHttpCallback() {
+                @Override
+                public void onFinish(String dataJson) throws JsonProcessingException {
+                    if (dataJson != null) {
+                        Student student = mapper.readValue(dataJson, Student.class);
+                        MyApplication.setStudent(student);
+                    }
+                }
+            });
+        }
     }
 
     @Override

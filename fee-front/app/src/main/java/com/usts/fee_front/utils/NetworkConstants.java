@@ -25,6 +25,7 @@ public class NetworkConstants {
     public static final String LOGIN_URL = STUDENT_URL + "/login";
     public static final String LOGOUT_URL = STUDENT_URL + "/logout";
     public static final String QUERY_ROLE_URL = STUDENT_URL + "/role/";
+    public static final String QUERY_ME_URL = STUDENT_URL + "/me";
 
     /**
      * 班级相关

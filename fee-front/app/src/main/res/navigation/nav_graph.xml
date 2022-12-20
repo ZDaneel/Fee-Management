@@ -136,4 +136,9 @@
             app:argType="integer"
             android:defaultValue="-1" />
     </fragment>
+    <activity
+        android:id="@+id/loginActivity"
+        android:name="com.usts.fee_front.LoginActivity"
+        android:label="LoginActivity"
+        tools:layout="@layout/activity_login"/>
 </navigation>
