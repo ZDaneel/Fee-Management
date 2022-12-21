@@ -1,7 +1,9 @@
 package com.usts.feeback.service.impl;
 
+import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.rabbitmq.client.Channel;
 import com.usts.feeback.dao.CommentMapper;
 import com.usts.feeback.pojo.Comment;
 import com.usts.feeback.pojo.Fee;
@@ -12,6 +14,8 @@ import com.usts.feeback.utils.Result;
 import com.usts.feeback.utils.StudentHolder;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,8 +28,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import static com.usts.feeback.utils.Constants.CLOSED;
-import static com.usts.feeback.utils.Constants.COMMENT_KEY;
+import static com.usts.feeback.utils.Constants.*;
 
 /**
  * (Comment)表服务实现类

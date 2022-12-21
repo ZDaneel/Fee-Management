@@ -4,6 +4,7 @@ import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.rabbitmq.client.Channel;
 import com.usts.feeback.pojo.Comment;
 import com.usts.feeback.pojo.Fee;
 import com.usts.feeback.dao.FeeMapper;
@@ -12,6 +13,10 @@ import com.usts.feeback.service.FeeService;
 import com.usts.feeback.service.StudentService;
 import com.usts.feeback.utils.Result;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessagePostProcessor;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,8 +27,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.usts.feeback.utils.Constants.BOOKKEEPER;
-import static com.usts.feeback.utils.Constants.FEE_TTL;
+import static com.usts.feeback.utils.Constants.*;
 
 /**
  * (Fee)表服务实现类
@@ -42,6 +46,9 @@ public class FeeServiceImpl extends ServiceImpl<FeeMapper, Fee> implements FeeSe
     @Resource
     private StudentService studentService;
 
+    @Resource
+    private RabbitTemplate rabbitTemplate;
+
     @Override
     @Transactional(rollbackFor = RuntimeException.class)
     public List<Fee> queryOpenFees(Integer classId, String name) {
@@ -57,27 +64,7 @@ public class FeeServiceImpl extends ServiceImpl<FeeMapper, Fee> implements FeeSe
         if (feeList.size() == 0) {
             return null;
         }
-        /*
-         * 过滤出超过一星期的支出并关闭
-         */
-        List<Fee> openFeeList = feeList.stream()
-                .filter(fee -> !isTimeout(fee.getCreateTime()))
-                .collect(Collectors.toList());
-        List<Fee> timeoutFeeList = feeList.stream()
-                .filter(fee -> !openFeeList.contains(fee))
-                .collect(Collectors.toList());
-        for (Fee fee : timeoutFeeList) {
-            fee.setClosed(1);
-            updateById(fee);
-            /*
-             * 异步关闭该fee下面所有的评论
-             */
-            LambdaQueryWrapper<Comment> commentLambdaQueryWrapper = new LambdaQueryWrapper<>();
-            commentLambdaQueryWrapper.eq(Comment::getTargetId, fee.getId());
-            List<Comment> commentList = commentService.list(commentLambdaQueryWrapper);
-            commentService.handleCommentListClose(commentList);
-        }
-        return openFeeList;
+        return feeList;
     }
 
     @Override
@@ -86,11 +73,20 @@ public class FeeServiceImpl extends ServiceImpl<FeeMapper, Fee> implements FeeSe
          * 获取新增后的id
          */
         save(fee);
-        System.out.println(fee.toString());
         Integer feeId = fee.getId();
         if (feeId == null) {
             return Result.error("新增fee失败");
         }
+        /*
+         * 发送到延迟队列中
+         */
+        log.info("当前时间: {}, 发送一条时长为{}毫秒的消息给延迟队列: {}", DateUtil.date(), TTL_TIME_DELAY, feeId);
+        MessagePostProcessor messagePostProcessor = msg -> {
+            msg.getMessageProperties().setDelay(Integer.parseInt(TTL_TIME_DELAY));
+            return msg;
+        };
+        rabbitTemplate.convertAndSend(EXCHANGE_FEE_DELAY, ROUTING_KEY_FEE_DELAY,
+                feeId.toString(), messagePostProcessor);
         return Result.success();
     }
 
@@ -157,5 +153,27 @@ public class FeeServiceImpl extends ServiceImpl<FeeMapper, Fee> implements FeeSe
         Date date = new Date();
         long between = DateUtil.between(date, createTime, DateUnit.DAY);
         return between > FEE_TTL;
+    }
+
+    /**
+     * 消费者
+     * @param message 消息
+     * @param channel 信道
+     */
+    @RabbitListener(queues = QUEUE_FEE_DELAY)
+    public void receiveDelayQueue(Message message, Channel channel) {
+        String msg = new String(message.getBody());
+        log.info("当前时间: {}, 收到延迟队列的消息: {}", DateUtil.date(), msg);
+        Fee fee = getById(Integer.parseInt(msg));
+        log.info(fee.toString());
+        fee.setClosed(1);
+        updateById(fee);
+        /*
+         * 异步关闭该fee下面所有的评论
+         */
+        LambdaQueryWrapper<Comment> commentLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        commentLambdaQueryWrapper.eq(Comment::getTargetId, fee.getId());
+        List<Comment> commentList = commentService.list(commentLambdaQueryWrapper);
+        commentService.handleCommentListClose(commentList);
     }
 }

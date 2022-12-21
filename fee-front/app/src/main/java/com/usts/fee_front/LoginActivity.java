@@ -59,27 +59,7 @@ public class LoginActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         });
-
-        binding.test.setOnClickListener(view1 -> {
-            test(view);
-        });
-
-        setImage();
     }
-
-    private void setImage() {
-        OkHttpUtils.get(NetworkConstants.QUERY_LOGIN_IMAGE_URL, new OkHttpCallback() {
-            @Override
-            public void onFinish(String dataJson) throws JsonProcessingException {
-                Log.e(TAG, "dataJson: " + dataJson);
-                String fileName = mapper.readValue(dataJson, String.class);
-                String imageUrl = NetworkConstants.GET_IMAGE_URL + fileName;
-                handler.post(() ->
-                        Glide.with(LoginActivity.this).load(imageUrl).into(binding.loginImage));
-            }
-        });
-    }
-
 
     /**
      * 登陆处理
@@ -151,17 +131,6 @@ public class LoginActivity extends AppCompatActivity {
                 });
             }
         });
-    }
-
-    public void test(View view) {
-        OkHttpUtils.get(NetworkConstants.BASE_URL + "/student/query/0/1?name=john",
-                new OkHttpCallback() {
-                    @Override
-                    public void onFinish(String dataJson) throws JsonProcessingException {
-                        Student student = mapper.readValue(dataJson, Student.class);
-                        handler.post(() -> binding.studentNo.setText(student.toString()));
-                    }
-                });
     }
 
     @Override

@@ -31,4 +31,15 @@ public class Constants {
     public static final int CLASS_MEMBER = 0;
     public static final int CLASS_COMMITTEE = 1;
     public static final int BOOKKEEPER = 2;
+
+    /**
+     * RabbitMQ
+     */
+    public static final String EXCHANGE_FEE_DELAY = "exchange.fee.delayed";
+    public static final String QUEUE_FEE_DELAY = "queue.fee.delayed";
+    public static final String ROUTING_KEY_FEE_DELAY = "routingKey.fee.delayed";
+    /**
+     * 单位为ms
+     */
+    public static final String TTL_TIME_DELAY = "2000";
 }
