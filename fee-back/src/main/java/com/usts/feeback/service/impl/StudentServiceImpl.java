@@ -1,6 +1,7 @@
 package com.usts.feeback.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -40,15 +41,31 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
         if (StrUtil.hasEmpty(password)) {
             return Result.error("密码为空");
         }
-        // 查询数据库
-        Student queryStudent = getOne(
+        /*
+         * 分批次查询数据库
+         *      先通过学号查询是否存在,如果不存在就注册
+         *      再通过学号和密码查询
+         */
+        Student queryStudent;
+        queryStudent = getOne(
                 Wrappers
                         .<Student>lambdaQuery()
                         .eq(Student::getSno, sno)
-                        .eq(Student::getPassword, password)
         );
-        if (queryStudent == null) {
-            return Result.error("学号或密码错误");
+        if (null == queryStudent) {
+            student.setSname("学生" + RandomUtil.randomString(6));
+            save(student);
+            queryStudent = BeanUtil.copyProperties(student, Student.class);
+        } else {
+            queryStudent = getOne(
+                    Wrappers
+                            .<Student>lambdaQuery()
+                            .eq(Student::getSno, sno)
+                            .eq(Student::getPassword, password)
+            );
+            if (null == queryStudent) {
+                return Result.error("学号或密码错误");
+            }
         }
         StudentDTO studentDTO = BeanUtil.copyProperties(queryStudent, StudentDTO.class);
         HttpSession session = request.getSession();
