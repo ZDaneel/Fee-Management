@@ -7,15 +7,15 @@
 
     <TextView
         android:id="@+id/detail_fee_title"
-        android:layout_width="130dp"
+        android:layout_width="160sp"
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
         android:ems="10"
         android:importantForAutofill="no"
         android:text="@string/detail_fee_title"
         android:textSize="30sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.064"
+        app:layout_constraintEnd_toStartOf="@+id/btn_edit"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -65,8 +65,30 @@
         android:id="@+id/detail_fee_image"
         android:layout_width="147dp"
         android:layout_height="133dp"
-        android:layout_marginTop="68dp"
+        android:layout_marginTop="120dp"
         android:contentDescription="@string/add_fee_image"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.893"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/text_fee_image"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.664"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.144" />
+
+    <ImageView
+        android:id="@+id/detail_note_image"
+        android:layout_width="147dp"
+        android:layout_height="133dp"
+        android:layout_marginTop="308dp"
+        android:contentDescription="@string/add_note_image"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.893"
         app:layout_constraintStart_toStartOf="parent"
@@ -81,29 +103,7 @@
         app:layout_constraintHorizontal_bias="0.664"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.33" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/text_fee_image"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.664"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.068" />
-
-    <ImageView
-        android:id="@+id/detail_note_image"
-        android:layout_width="147dp"
-        android:layout_height="133dp"
-        android:layout_marginTop="256dp"
-        android:contentDescription="@string/add_note_image"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.893"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintVertical_bias="0.407" />
 
     <Button
         android:id="@+id/btn_check"
@@ -122,12 +122,12 @@
         android:id="@+id/btn_edit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="148dp"
         android:layout_marginTop="28dp"
+        android:layout_marginEnd="184dp"
         android:contentDescription="@string/fee_item_edit"
         android:src="@drawable/ic_setting_edit"
         android:text="@string/fee_delete_confirm"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -22,6 +22,10 @@ spring:
     password: guest
   jackson:
     default-property-inclusion: non_null
+  servlet:
+    multipart:
+      max-request-size: 100MB
+      max-file-size: 100MB
 
 logging:
   level:

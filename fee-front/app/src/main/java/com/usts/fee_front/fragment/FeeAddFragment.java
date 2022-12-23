@@ -74,6 +74,8 @@ public class FeeAddFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentFeeAddBinding.inflate(inflater, container, false);
         int classId = FeeListFragmentArgs.fromBundle(getArguments()).getClassId();
+        binding.addFeeImage.setImageResource(R.drawable.ic_image_camera);
+        binding.addNoteImage.setImageResource(R.drawable.ic_image_camera);
         handleConfirmButton(classId);
         /*
          * 处理添加开支和小票图片
@@ -113,7 +115,7 @@ public class FeeAddFragment extends Fragment {
             }
         };
 
-        binding.addNoteCamera.setOnClickListener(view -> {
+        binding.addNoteImage.setOnClickListener(view -> {
             EasyPhotos.createAlbum(this, true, false, GlideEngine.getInstance())
                     .setFileProviderAuthority("com.usts.fee_front.fileprovider")
                     .start(noteImageCallback);
@@ -148,7 +150,7 @@ public class FeeAddFragment extends Fragment {
             }
         };
 
-        binding.addFeeCamera.setOnClickListener(view -> {
+        binding.addFeeImage.setOnClickListener(view -> {
             EasyPhotos.createAlbum(this, true, false, GlideEngine.getInstance())
                     .setFileProviderAuthority("com.usts.fee_front.fileprovider")
                     .start(feeImageCallback);

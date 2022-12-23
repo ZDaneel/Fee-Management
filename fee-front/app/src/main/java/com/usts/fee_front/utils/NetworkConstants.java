@@ -5,9 +5,9 @@ package com.usts.fee_front.utils;
  */
 public class NetworkConstants {
     private static final String VIRTUAL_HOST = "10.0.2.2";
-    public static final String REAL_HOST = "192.168.2.158";
+    public static final String REAL_HOST = "192.168.1.113";
     private static final String PORT = "8096";
-    public static final String BASE_URL = "http://" + VIRTUAL_HOST + ":" + PORT;
+    public static final String BASE_URL = "http://" + REAL_HOST + ":" + PORT;
     public static final String STUDENT_URL = BASE_URL + "/student";
     public static final String COLLEGE_CLASS_URL = BASE_URL + "/college-class";
     public static final String FEE_URL = BASE_URL + "/fee";

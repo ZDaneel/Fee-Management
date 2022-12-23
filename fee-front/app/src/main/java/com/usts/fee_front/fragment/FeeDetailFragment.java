@@ -109,11 +109,15 @@ public class FeeDetailFragment extends Fragment {
                             Glide.with(requireContext())
                                     .load(NetworkConstants.GET_IMAGE_URL + feeImageUrl)
                                     .into(binding.detailFeeImage);
+                        } else {
+                            binding.detailFeeImage.setImageResource(R.drawable.ic_image_camera);
                         }
                         if (noteImageUrl != null) {
                             Glide.with(requireContext())
                                     .load(NetworkConstants.GET_IMAGE_URL + noteImageUrl)
                                     .into(binding.detailNoteImage);
+                        } else {
+                            binding.detailNoteImage.setImageResource(R.drawable.ic_image_camera);
                         }
                         binding.detailFeeName.append(fname);
                         binding.detailFeeMoney.append(moneyString);

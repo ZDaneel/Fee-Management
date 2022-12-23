@@ -124,6 +124,10 @@ public class FeeAdapter extends RecyclerView.Adapter<FeeAdapter.FeeHolder> {
                 Glide.with(MyApplication.getContext())
                         .load(NetworkConstants.GET_IMAGE_URL + imageUrl)
                         .into(mImageView);
+            } else {
+                Glide.with(MyApplication.getContext())
+                        .load(R.drawable.ic_image_camera)
+                        .into(mImageView);
             }
             // 使用java8的时间api转格式
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {

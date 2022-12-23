@@ -82,11 +82,15 @@ public class FeeEditFragment extends Fragment {
                             Glide.with(requireContext())
                                     .load(NetworkConstants.GET_IMAGE_URL + feeImageUrl)
                                     .into(binding.editFeeImage);
+                        } else {
+                            binding.editFeeImage.setImageResource(R.drawable.ic_image_camera);
                         }
                         if (noteImageUrl != null) {
                             Glide.with(requireContext())
                                     .load(NetworkConstants.GET_IMAGE_URL + noteImageUrl)
                                     .into(binding.editNoteImage);
+                        } else {
+                            binding.editNoteImage.setImageResource(R.drawable.ic_image_camera);
                         }
                     });
                 }
@@ -120,7 +124,7 @@ public class FeeEditFragment extends Fragment {
             }
         };
 
-        binding.editNoteCamera.setOnClickListener(view -> {
+        binding.editNoteImage.setOnClickListener(view -> {
             EasyPhotos.createAlbum(this, true, false, GlideEngine.getInstance())
                     .setFileProviderAuthority("com.usts.fee_front.fileprovider")
                     .start(noteImageCallback);
@@ -153,7 +157,7 @@ public class FeeEditFragment extends Fragment {
             }
         };
 
-        binding.editFeeCamera.setOnClickListener(view -> {
+        binding.editFeeImage.setOnClickListener(view -> {
             EasyPhotos.createAlbum(this, true, false, GlideEngine.getInstance())
                     .setFileProviderAuthority("com.usts.fee_front.fileprovider")
                     .start(feeImageCallback);
