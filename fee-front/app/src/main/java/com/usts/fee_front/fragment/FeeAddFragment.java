@@ -44,6 +44,7 @@ import com.usts.fee_front.R;
 import com.usts.fee_front.databinding.FragmentFeeAddBinding;
 import com.usts.fee_front.databinding.FragmentFeeListBinding;
 import com.usts.fee_front.pojo.Fee;
+import com.usts.fee_front.utils.GlideCacheUtil;
 import com.usts.fee_front.utils.GlideEngine;
 import com.usts.fee_front.utils.NetworkConstants;
 import com.usts.fee_front.utils.OkHttpCallback;
@@ -102,6 +103,7 @@ public class FeeAddFragment extends Fragment {
                             handler.post(() -> {
                                 Glide.with(requireActivity())
                                         .load(noteImagePath)
+                                        .apply(GlideCacheUtil.getCacheStrategy())
                                         .into(binding.addNoteImage);
                             });
                         }
@@ -137,6 +139,7 @@ public class FeeAddFragment extends Fragment {
                             handler.post(() -> {
                                 Glide.with(requireActivity())
                                         .load(feeImagePath)
+                                        .apply(GlideCacheUtil.getCacheStrategy())
                                         .into(binding.addFeeImage);
                             });
                         }

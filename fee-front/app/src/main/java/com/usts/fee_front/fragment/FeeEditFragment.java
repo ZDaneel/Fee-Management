@@ -25,6 +25,7 @@ import com.usts.fee_front.R;
 import com.usts.fee_front.databinding.FragmentFeeAddBinding;
 import com.usts.fee_front.databinding.FragmentFeeEditBinding;
 import com.usts.fee_front.pojo.Fee;
+import com.usts.fee_front.utils.GlideCacheUtil;
 import com.usts.fee_front.utils.GlideEngine;
 import com.usts.fee_front.utils.NetworkConstants;
 import com.usts.fee_front.utils.OkHttpCallback;
@@ -81,6 +82,7 @@ public class FeeEditFragment extends Fragment {
                         if (feeImageUrl != null) {
                             Glide.with(requireContext())
                                     .load(NetworkConstants.GET_IMAGE_URL + feeImageUrl)
+                                    .apply(GlideCacheUtil.getCacheStrategy())
                                     .into(binding.editFeeImage);
                         } else {
                             binding.editFeeImage.setImageResource(R.drawable.ic_image_camera);
@@ -88,6 +90,7 @@ public class FeeEditFragment extends Fragment {
                         if (noteImageUrl != null) {
                             Glide.with(requireContext())
                                     .load(NetworkConstants.GET_IMAGE_URL + noteImageUrl)
+                                    .apply(GlideCacheUtil.getCacheStrategy())
                                     .into(binding.editNoteImage);
                         } else {
                             binding.editNoteImage.setImageResource(R.drawable.ic_image_camera);
@@ -110,9 +113,11 @@ public class FeeEditFragment extends Fragment {
                         if (dataJson != null) {
                             noteImageName = mapper.readValue(dataJson, String.class);
                             String noteImagePath = NetworkConstants.GET_IMAGE_URL + noteImageName;
-                            handler.post(() -> Glide.with(requireActivity())
-                                    .load(noteImagePath)
-                                    .into(binding.editNoteImage));
+                            handler.post(() ->
+                                    Glide.with(requireActivity())
+                                            .load(noteImagePath)
+                                            .apply(GlideCacheUtil.getCacheStrategy())
+                                            .into(binding.editNoteImage));
                         }
                     }
                 });
@@ -143,9 +148,11 @@ public class FeeEditFragment extends Fragment {
                         if (dataJson != null) {
                             feeImageName = mapper.readValue(dataJson, String.class);
                             String feeImagePath = NetworkConstants.GET_IMAGE_URL + feeImageName;
-                            handler.post(() -> Glide.with(requireActivity())
-                                    .load(feeImagePath)
-                                    .into(binding.editFeeImage));
+                            handler.post(() ->
+                                    Glide.with(requireActivity())
+                                            .load(feeImagePath)
+                                            .apply(GlideCacheUtil.getCacheStrategy())
+                                            .into(binding.editFeeImage));
                         }
                     }
                 });
@@ -166,7 +173,6 @@ public class FeeEditFragment extends Fragment {
 
     /**
      * 处理确认按钮
-     *
      */
     private void handleConfirmButton(int classId) {
         binding.btnConfirm.setOnClickListener(view -> {

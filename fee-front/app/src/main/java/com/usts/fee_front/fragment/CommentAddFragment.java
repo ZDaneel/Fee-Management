@@ -38,7 +38,8 @@ public class CommentAddFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentCommentAddBinding.inflate(inflater, container, false);
         Integer feeId = CommentAddFragmentArgs.fromBundle(getArguments()).getFeeId();
-        handleConfirmButton(feeId);
+        Integer classId = CommentAddFragmentArgs.fromBundle(getArguments()).getClassId();
+        handleConfirmButton(feeId, classId);
         return binding.getRoot();
     }
 
@@ -47,7 +48,7 @@ public class CommentAddFragment extends Fragment {
      *
      * @param feeId 开支id
      */
-    private void handleConfirmButton(Integer feeId) {
+    private void handleConfirmButton(Integer feeId, Integer classId) {
         binding.addCommentButton.setOnClickListener(view -> {
             // TODO 检测为空
             String title = binding.addCommentTitle.getText().toString();
@@ -68,6 +69,7 @@ public class CommentAddFragment extends Fragment {
                             binding.addCommentContent.setText("");
                             Bundle bundle = new CommentListFragmentArgs.Builder()
                                     .setFeeId(comment.getTargetId())
+                                    .setClassId(classId)
                                     .build()
                                     .toBundle();
                             NavHostFragment.findNavController(CommentAddFragment.this)

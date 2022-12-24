@@ -24,6 +24,7 @@ import com.usts.fee_front.databinding.FragmentFeeDetailBinding;
 import com.usts.fee_front.databinding.FragmentFeeListBinding;
 import com.usts.fee_front.pojo.Fee;
 import com.usts.fee_front.utils.CommonConstants;
+import com.usts.fee_front.utils.GlideCacheUtil;
 import com.usts.fee_front.utils.NetworkConstants;
 import com.usts.fee_front.utils.OkHttpCallback;
 import com.usts.fee_front.utils.OkHttpUtils;
@@ -108,6 +109,7 @@ public class FeeDetailFragment extends Fragment {
                         if (feeImageUrl != null) {
                             Glide.with(requireContext())
                                     .load(NetworkConstants.GET_IMAGE_URL + feeImageUrl)
+                                    .apply(GlideCacheUtil.getCacheStrategy())
                                     .into(binding.detailFeeImage);
                         } else {
                             binding.detailFeeImage.setImageResource(R.drawable.ic_image_camera);
@@ -115,6 +117,7 @@ public class FeeDetailFragment extends Fragment {
                         if (noteImageUrl != null) {
                             Glide.with(requireContext())
                                     .load(NetworkConstants.GET_IMAGE_URL + noteImageUrl)
+                                    .apply(GlideCacheUtil.getCacheStrategy())
                                     .into(binding.detailNoteImage);
                         } else {
                             binding.detailNoteImage.setImageResource(R.drawable.ic_image_camera);

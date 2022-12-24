@@ -10,14 +10,14 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.usts.fee_front.MyApplication;
 import com.usts.fee_front.R;
 import com.usts.fee_front.pojo.Fee;
+import com.usts.fee_front.utils.GlideCacheUtil;
 import com.usts.fee_front.utils.NetworkConstants;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -123,10 +123,12 @@ public class FeeAdapter extends RecyclerView.Adapter<FeeAdapter.FeeHolder> {
             if (imageUrl != null) {
                 Glide.with(MyApplication.getContext())
                         .load(NetworkConstants.GET_IMAGE_URL + imageUrl)
+                        .apply(GlideCacheUtil.getCacheStrategy())
                         .into(mImageView);
             } else {
                 Glide.with(MyApplication.getContext())
                         .load(R.drawable.ic_image_camera)
+                        .apply(GlideCacheUtil.getCacheStrategy())
                         .into(mImageView);
             }
             // 使用java8的时间api转格式

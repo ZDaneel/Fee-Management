@@ -62,6 +62,7 @@ public class CommentListFragment extends Fragment {
         commentRecyclerView.addItemDecoration(new DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL));
         feeId = CommentListFragmentArgs.fromBundle(getArguments()).getFeeId();
         classId = CommentListFragmentArgs.fromBundle(getArguments()).getClassId();
+
         handleSpinner();
         handleSearch();
         handleAddButton();
@@ -129,6 +130,7 @@ public class CommentListFragment extends Fragment {
         btnFeeAdd.setOnClickListener(view -> {
             Bundle bundle = new CommentAddFragmentArgs.Builder()
                     .setFeeId(feeId)
+                    .setClassId(classId)
                     .build()
                     .toBundle();
             NavHostFragment.findNavController(CommentListFragment.this)

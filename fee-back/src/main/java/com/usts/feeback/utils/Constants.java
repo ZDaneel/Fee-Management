@@ -40,6 +40,9 @@ public class Constants {
     public static final String ROUTING_KEY_FEE_DELAY = "routingKey.fee.delayed";
     /**
      * 单位为ms
+     * 1min: 60000
+     * 1h: 3600000·
+     * 1week: 604800000
      */
-    public static final String TTL_TIME_DELAY = "2000";
+    public static final String TTL_TIME_DELAY = "100000";
 }

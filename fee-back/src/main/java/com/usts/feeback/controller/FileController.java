@@ -1,15 +1,17 @@
 package com.usts.feeback.controller;
 
+import cn.hutool.core.img.ImgUtil;
 import cn.hutool.core.io.FileUtil;
 import com.usts.feeback.utils.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.UUID;
 
@@ -42,15 +44,14 @@ public class FileController {
         String uuid = UUID.randomUUID().toString().replace("-", "");
         String fileName = uuid + "." + type;
         String path = fileUploadPath + fileName;
-        System.out.println(path);
         file.transferTo(FileUtil.touch(path));
-        return Result.success(fileName);
-    }
-
-    @ApiOperation(value = "登陆页面使用图片")
-    @GetMapping("/login-image")
-    public Result<String> queryLoginImage() {
-        String fileName = "bb39991acccf4937823b0e344683cdbe.JPG";
+        /*
+         * 如果是拍照的图片 竖着的在压缩时会自动旋转 目前不做处理 后续优化
+         *
+         */
+        File imageFile = new File(path);
+        long size = FileUtil.size(imageFile);
+        ImgUtil.scale(FileUtil.file(path), FileUtil.file(path), 0.8f);
         return Result.success(fileName);
     }
 }

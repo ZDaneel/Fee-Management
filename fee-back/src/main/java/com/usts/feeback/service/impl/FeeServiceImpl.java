@@ -134,12 +134,14 @@ public class FeeServiceImpl extends ServiceImpl<FeeMapper, Fee> implements FeeSe
         LambdaQueryWrapper<Comment> commentLambdaQueryWrapper = new LambdaQueryWrapper<>();
         commentLambdaQueryWrapper.eq(Comment::getTargetId, fee.getId()).select(Comment::getId);
         List<Comment> commentList = commentService.list(commentLambdaQueryWrapper);
-        List<Integer> commentIds = commentList.stream()
-                .map(Comment::getId)
-                .collect(Collectors.toList());
-        boolean removeComments = commentService.removeByIds(commentIds);
-        if (!removeComments) {
-            return Result.error("删除失败");
+        if (0 != commentList.size()) {
+            List<Integer> commentIds = commentList.stream()
+                    .map(Comment::getId)
+                    .collect(Collectors.toList());
+            boolean removeComments = commentService.removeByIds(commentIds);
+            if (!removeComments) {
+                return Result.error("删除失败");
+            }
         }
         return Result.success(removeById(fee.getId()));
     }
@@ -165,7 +167,6 @@ public class FeeServiceImpl extends ServiceImpl<FeeMapper, Fee> implements FeeSe
         String msg = new String(message.getBody());
         log.info("当前时间: {}, 收到延迟队列的消息: {}", DateUtil.date(), msg);
         Fee fee = getById(Integer.parseInt(msg));
-        log.info(fee.toString());
         fee.setClosed(1);
         updateById(fee);
         /*

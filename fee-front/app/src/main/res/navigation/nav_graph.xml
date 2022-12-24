@@ -96,6 +96,10 @@
         <action
             android:id="@+id/action_commentAddFragment_to_commentListFragment"
             app:destination="@id/commentListFragment" />
+        <argument
+            android:name="class_id"
+            app:argType="integer"
+            android:defaultValue="-1" />
     </fragment>
 
     <fragment
